@@ -16,7 +16,6 @@ def solve_1(list_a, list_b):
     list_a.sort()
     list_b.sort()
     return sum([abs(a-b) for a,b in zip(list_a, list_b)])
-    print(result)
 
 def solve_2(list_a, list_b):
     return sum([list_b.count(id) * id for id in list_a])
