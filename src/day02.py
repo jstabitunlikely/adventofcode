@@ -1,13 +1,7 @@
 #!/usr/bin/python3
 
 import inputfetcher
-
-def sign(num):
-    if num < 0:
-        return -1
-    if num > 0:
-        return 1
-    return 0
+import utils
 
 def parse_input():
     input_text = inputfetcher.fetch_input('2024', '2')
@@ -22,7 +16,7 @@ def solve_1(reports):
         report_d = [y-x for x,y in zip(report, report[1:])]
         if [d for d in report_d if abs(d) > 3]:
             continue
-        if len(set([sign(d) for d in report_d])) > 1:
+        if len(set([utils.sign(d) for d in report_d])) > 1:
             continue
         safe += 1
     return safe
