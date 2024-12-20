@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 
 import inputfetcher
-from collections import Counter
 
 def sign(num):
     if num < 0:
