@@ -2,8 +2,6 @@
 #!/usr/bin/python3
 
 import inputfetcher
-from functools import cmp_to_key
-from collections import Counter
 
 EXAMPLE1 = """47|53
 97|13
