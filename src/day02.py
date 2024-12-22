@@ -3,23 +3,26 @@
 import inputfetcher
 import utils
 
+
 def parse_input():
     input_text = inputfetcher.fetch_input('2024', '2')
     reports = []
     for line in input_text.split('\n'):
-        reports.append([ int(x) for x in line.split()])
+        reports.append([int(x) for x in line.split()])
     return reports
+
 
 def solve_1(reports):
     safe = 0
     for report in reports:
-        report_d = [y-x for x,y in zip(report, report[1:])]
+        report_d = [y-x for x, y in zip(report, report[1:])]
         if [d for d in report_d if abs(d) > 3]:
             continue
         if len(set([utils.sign(d) for d in report_d])) > 1:
             continue
         safe += 1
     return safe
+
 
 def solve_2(reports):
     safe = 0
@@ -32,6 +35,7 @@ def solve_2(reports):
                 safe += 1
                 break
     return safe
+
 
 if __name__ == "__main__":
     reports = parse_input()

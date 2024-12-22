@@ -3,20 +3,25 @@
 import inputfetcher
 import re
 
+
 def parse_input():
     return inputfetcher.fetch_input('2024', '3')
 
-def mul(a,b):
+
+def mul(a, b):
     return a*b
+
 
 def solve_1(mem_contents):
     mul_instr_re = re.compile(r'mul\(\d{1,3},\d{1,3}\)')
     muls = re.findall(mul_instr_re, mem_contents)
     return sum([int(eval(m)) for m in muls])
 
+
 def solve_2(mem_contents):
-    disabled_re = re.compile( r'don\'t\(\).*?do\(\)', re.DOTALL)
+    disabled_re = re.compile(r'don\'t\(\).*?do\(\)', re.DOTALL)
     return solve_1(re.sub(disabled_re, '', mem_contents))
+
 
 if __name__ == "__main__":
     mem_contents = parse_input()

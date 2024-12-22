@@ -3,6 +3,7 @@ import os
 import time
 import sh
 
+
 def fetch_input(year, day, cache_dir='cache'):
     base_url = 'https://adventofcode.com/{}/day/{}/input'
     git = sh.Command('git')
@@ -15,7 +16,7 @@ def fetch_input(year, day, cache_dir='cache'):
         file_mtime = os.path.getmtime(filename)
         if time.time() - file_mtime < 86400:  # Cache for 24 hours
             with open(filename, 'r') as f:
-                return(f.read())
+                return (f.read())
 
     # Create the request
     url = base_url.format(year, day)
