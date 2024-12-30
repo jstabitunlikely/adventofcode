@@ -28,7 +28,17 @@ DIR_MAP = {
 
 def parse_input(example: bool):
     data = EXAMPLE if example else inputfetcher.fetch_input('2024', '6')
-    return data.split()
+    return [list(line) for line in data.split()]
+
+
+def is_on_map(px: int,
+              py: int) -> bool:
+    if px not in range(len(lab_map)):
+        return False
+    elif py not in range(len(lab_map[0])):
+        return False
+    else:
+        return True
 
 
 def turn_right(dir: int) -> int:
@@ -43,20 +53,11 @@ def step(dir: int,
     return (px_next, py_next)
 
 
-def is_obstacle_ahead(dir: int,
-                      px: int,
-                      py: int,
-                      obstacles: list[tuple[int, int]]) -> bool:
-    return step(dir, px, py) in obstacles
-
-
-def find_obstacles(lab_map: list[list]) -> list[tuple[int, int]]:
-    obstacles = []
-    for x, row in enumerate(lab_map):
-        for y, e in enumerate(row):
-            if e == '#':
-                obstacles.append((x, y))
-    return obstacles
+def is_obstacle(px: int,
+                py: int,
+                lab_map: list[list]) -> bool:
+    if is_on_map(px, py):
+        return lab_map[px][py] == "#"
 
 
 def find_guard(lab_map: list[list]):
@@ -67,55 +68,55 @@ def find_guard(lab_map: list[list]):
 
 
 def walk(guard: tuple[int, int, int],
-         obstacles: list[tuple[int, int]],
-         lab_map: list[list]) -> list[tuple[int, int, int]]:
-    path = []
+         lab_map: list[list]) -> tuple[set[tuple[int, int]], bool]:
     dir, px, py = guard
+    # Unique positions visited
+    visited = set([(px, py)])
+    # Path history with directions
+    path = set([guard])
+    loop = False
     while True:
-        path.append((dir, px, py))
-        # Check if we're running in circles (for Part 2 only)
-        if len(path) > 2 and path[-1] == path[0]:
+        # Look ahead
+        px_next, py_next = step(dir, px, py)
+        # Check if we're at the edge of the map
+        if not is_on_map(px_next, py_next):
             break
-        if is_obstacle_ahead(dir, px, py, obstacles):
+        # Check if there's an obstacle ahead
+        while is_obstacle(px_next, py_next, lab_map):
             dir = turn_right(dir)
-        else:
-            px, py = step(dir, px, py)
-            # Check if we've walked off the map
-            try:
-                lab_map[px][py]
-            except IndexError:
-                break
-    return path
+            px_next, py_next = step(dir, px, py)
+        # Check if we're running in circles (for Part 2 only)
+        if (dir, px_next, py_next) in path:
+            loop = True
+            break
+        # Actually step ahead
+        px, py = px_next, py_next
+        # Save current position
+        visited.add((px, py))
+        path.add((dir, px, py))
+    return visited, loop
 
 
-def solve_1(lab_map: list[list]) -> int:
-    obstacles = find_obstacles(lab_map)
+def solve_1_2(lab_map: list[list]) -> int:
     guard = find_guard(lab_map)
-    path = walk(guard, obstacles, lab_map)
-    unique_path_len = len(set([(p[1], p[2]) for p in path]))
-    return unique_path_len
-
-
-def solve_2(lab_map: list[list]) -> int:
-    obstacles = find_obstacles(lab_map)
-    guard = find_guard(lab_map)
-    path = walk(guard, obstacles, lab_map)
+    visited, _ = walk(guard, lab_map)
+    num_visited = len(visited)
+    # As per spec, we can't put an obstacle on the guard's starting position
+    visited.remove((guard[1], guard[2]))
     loops = 0
-    # placeholder for the potential obstacle, so we don't have to re-allocate the array each time
-    obstacles.append((-1, -1))
-    for dir, px, py in path[1:-1]:
-        if not is_obstacle_ahead(dir, px, py, obstacles):
-            obstacles[-1] = step(dir, px, py)
-            new_path = walk((dir, px, py), obstacles, lab_map)
-            if new_path[-1] == new_path[0]:
-                loops += 1
-    return loops
+    # Try putting an obstacle onto each visited position (temporarily) and
+    # do the walk again, checking if the new path has a loop
+    for (px, py) in visited:
+        lab_map[px][py] = "#"
+        _, loop = walk(guard, lab_map)
+        loops += 1 if loop else 0
+        lab_map[px][py] = "."
+    return num_visited, loops
 
 
 if __name__ == "__main__":
     example = "--example" in sys.argv
     lab_map = parse_input(example=example)
-    result_1 = solve_1(lab_map)
+    result_1, result_2 = solve_1_2(lab_map)
     print(f'Result 1: {result_1}')
-    result_2 = solve_2(lab_map)
     print(f'Result 2: {result_2}')
