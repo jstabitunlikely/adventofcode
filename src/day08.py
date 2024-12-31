@@ -1,5 +1,5 @@
 import sys
-from itertools import combinations
+from itertools import permutations
 
 import inputfetcher
 from Coordinate import Coordinate
@@ -41,36 +41,19 @@ def find_antennas(map_: list[list[str]]) -> dict[list[object]]:
     return antennas
 
 
-def solve_1(map_: list[list[str]]) -> int:
-    antennas = find_antennas(map_)
+def solve_1_2(map_: list[list[str]],
+              resonant_harmonics: bool = False) -> int:
     antinodes = set()
-    for antlist in antennas.values():
-        for ant1, ant2 in list(combinations(antlist, 2)):
-            for node in [2*ant1 - ant2, 2*ant2 - ant1]:
-                if is_on_map(node, map_):
-                    antinodes.add(node)
-    return len(antinodes)
-
-
-def solve_2(map_: list[list[str]]) -> int:
-    antennas = find_antennas(map_)
-    antinodes = set()
-    for antlist in antennas.values():
-        for ant1, ant2 in list(combinations(antlist, 2)):
-            n = 1
+    for antlist in find_antennas(map_).values():
+        for ant1, ant2 in list(permutations(antlist, 2)):
+            n = 1 if resonant_harmonics else 2
             while True:
                 node = n*ant1 - (n-1)*ant2
                 if is_on_map(node, map_):
                     antinodes.add(node)
                 else:
                     break
-                n += 1
-            n = 1
-            while True:
-                node = n*ant2 - (n-1)*ant1
-                if is_on_map(node, map_):
-                    antinodes.add(node)
-                else:
+                if not resonant_harmonics:
                     break
                 n += 1
     return len(antinodes)
@@ -79,7 +62,7 @@ def solve_2(map_: list[list[str]]) -> int:
 if __name__ == "__main__":
     example = "--example" in sys.argv
     map_ = parse_input(example=example)
-    result_1 = solve_1(map_)
+    result_1 = solve_1_2(map_,)
     print(f'Result 1: {result_1}')
-    result_2 = solve_2(map_)
+    result_2 = solve_1_2(map_, resonant_harmonics=True)
     print(f'Result 2: {result_2}')
