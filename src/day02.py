@@ -1,7 +1,5 @@
-#!/usr/bin/python3
-
 import inputfetcher
-import utils
+from utils import sign
 
 
 def parse_input():
@@ -18,7 +16,7 @@ def solve_1(reports):
         report_d = [y-x for x, y in zip(report, report[1:])]
         if [d for d in report_d if abs(d) > 3]:
             continue
-        if len(set([utils.sign(d) for d in report_d])) > 1:
+        if len(set([sign(d) for d in report_d])) > 1:
             continue
         safe += 1
     return safe

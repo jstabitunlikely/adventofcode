@@ -1,9 +1,6 @@
-
-#!/usr/bin/python3
-
 import inputfetcher
 
-EXAMPLE1 = """47|53
+EXAMPLE = """47|53
 97|13
 97|61
 97|47
@@ -33,13 +30,8 @@ EXAMPLE1 = """47|53
 97,13,75,29,47"""
 
 
-def parse_input(example1=False, example2=False):
-    if example1:
-        data = EXAMPLE1
-    elif example2:
-        data = EXAMPLE2
-    else:
-        data = inputfetcher.fetch_input('2024', '5')
+def parse_input(use_example=False):
+    data = EXAMPLE if use_example else inputfetcher.fetch_input('2024', '5')
     # separate the rulesest from the list of page updates
     ruleset, updates = data.split('\n\n')
     # convert the ruleset to a list of integer pairs

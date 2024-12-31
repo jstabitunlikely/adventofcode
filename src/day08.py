@@ -60,8 +60,8 @@ def solve_1_2(map_: list[list[str]],
 
 
 if __name__ == "__main__":
-    example = "--example" in sys.argv
-    map_ = parse_input(example=example)
+    use_example = "--example" in sys.argv
+    map_ = parse_input(use_example)
     result_1 = solve_1_2(map_,)
     print(f'Result 1: {result_1}')
     result_2 = solve_1_2(map_, resonant_harmonics=True)

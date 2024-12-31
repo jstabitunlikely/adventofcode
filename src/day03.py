@@ -1,7 +1,5 @@
-#!/usr/bin/python3
-
-import inputfetcher
 import re
+import inputfetcher
 
 
 def parse_input():

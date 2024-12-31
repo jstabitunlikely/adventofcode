@@ -1,7 +1,5 @@
-#!/usr/bin/python3
-
-import inputfetcher
 import sys
+import inputfetcher
 
 EXAMPLE = """\
 ....#.....
@@ -26,8 +24,8 @@ DIR_MAP = {
 }
 
 
-def parse_input(example: bool):
-    data = EXAMPLE if example else inputfetcher.fetch_input('2024', '6')
+def parse_input(use_example: bool):
+    data = EXAMPLE if use_example else inputfetcher.fetch_input('2024', '6')
     return [list(line) for line in data.split()]
 
 
@@ -115,8 +113,8 @@ def solve_1_2(lab_map: list[list]) -> int:
 
 
 if __name__ == "__main__":
-    example = "--example" in sys.argv
-    lab_map = parse_input(example=example)
+    use_example = "--example" in sys.argv
+    lab_map = parse_input(use_example)
     result_1, result_2 = solve_1_2(lab_map)
     print(f'Result 1: {result_1}')
     print(f'Result 2: {result_2}')

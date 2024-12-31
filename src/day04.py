@@ -26,10 +26,10 @@ M.M.M.M.M.
 .........."""
 
 
-def parse_input(example1=False, example2=False):
-    if example1:
+def parse_input(use_example1=False, use_example2=False):
+    if use_example1:
         data = EXAMPLE1
-    elif example2:
+    elif use_example2:
         data = EXAMPLE2
     else:
         data = inputfetcher.fetch_input('2024', '4')

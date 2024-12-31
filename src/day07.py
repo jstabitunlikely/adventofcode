@@ -14,8 +14,8 @@ EXAMPLE = """\
 """
 
 
-def parse_input(example: bool) -> list[list[int], list[int]]:
-    data = EXAMPLE if example else inputfetcher.fetch_input('2024', '7')
+def parse_input(use_example: bool) -> list[list[int], list[int]]:
+    data = EXAMPLE if use_example else inputfetcher.fetch_input('2024', '7')
     equations = data.split('\n')
     equations = [e.split(':') for e in equations]
     equations = [[e[0], e[1].split()] for e in equations]
@@ -60,8 +60,8 @@ def solve_2(equations: list[list[int], list[int]]):
 
 
 if __name__ == "__main__":
-    example = "--example" in sys.argv
-    equations = parse_input(example=example)
+    use_example = "--example" in sys.argv
+    equations = parse_input(use_example)
     result_1 = solve_1(equations)
     print(f'Result 1: {result_1}')
     result_2 = solve_2(equations)
