@@ -25,11 +25,11 @@ def parse_input(example: bool) -> list[list[str]]:
     return [list(line) for line in data.split()]
 
 
-def is_on_map(c: object, map_: list[list[str]]) -> bool:
+def is_on_map(c: Coordinate, map_: list[list[str]]) -> bool:
     return 0 <= c.x < len(map_) and 0 <= c.y < len(map_[0])
 
 
-def find_antennas(map_: list[list[str]]) -> dict[list[object]]:
+def find_antennas(map_: list[list[str]]) -> dict[list[Coordinate]]:
     antennas = {}
     for x, row in enumerate(map_):
         for y, c in enumerate(row):
