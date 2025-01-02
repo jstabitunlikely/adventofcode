@@ -43,18 +43,11 @@ def maths(tv: int,
     return a or m or c
 
 
-def solve_1(equations: list[list[int], list[int]]):
+def solve_1_2(equations: list[list[int], list[int]],
+              cen: bool = False) -> int:
     cv = 0
     for tv, n in equations:
-        if maths(tv, n[0], n[1:]):
-            cv += tv
-    return cv
-
-
-def solve_2(equations: list[list[int], list[int]]):
-    cv = 0
-    for tv, n in equations:
-        if maths(tv, n[0], n[1:], cen=True):
+        if maths(tv, n[0], n[1:], cen):
             cv += tv
     return cv
 
@@ -62,7 +55,7 @@ def solve_2(equations: list[list[int], list[int]]):
 if __name__ == "__main__":
     use_example = "--example" in sys.argv
     equations = parse_input(use_example)
-    result_1 = solve_1(equations)
+    result_1 = solve_1_2(equations, cen=False)
     print(f'Result 1: {result_1}')
-    result_2 = solve_2(equations)
+    result_2 = solve_1_2(equations, cen=True)
     print(f'Result 2: {result_2}')
