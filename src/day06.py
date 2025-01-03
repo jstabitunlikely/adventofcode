@@ -1,5 +1,7 @@
 import sys
+
 import inputfetcher
+from inputparsers import parse_matrix2d
 
 EXAMPLE = """\
 ....#.....
@@ -26,7 +28,7 @@ DIR_MAP = {
 
 def parse_input(use_example: bool):
     data = EXAMPLE if use_example else inputfetcher.fetch_input('2024', '6')
-    return [list(line) for line in data.split()]
+    return parse_matrix2d(data, str)
 
 
 def is_on_map(px: int,

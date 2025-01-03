@@ -1,7 +1,9 @@
 #!/usr/bin/python3
 
-import inputfetcher
 import re
+
+import inputfetcher
+from inputparsers import parse_matrix2d
 
 EXAMPLE1 = """MMMSXXMASM
 MSAMXMSMSA
@@ -33,9 +35,8 @@ def parse_input(use_example1=False, use_example2=False):
         data = EXAMPLE2
     else:
         data = inputfetcher.fetch_input('2024', '4')
-    text = data.split()  # along lines
-    textrix = [list(line) for line in text]  # along characters
-    return textrix
+    return parse_matrix2d(data, str)
+
 
 
 def count_in_rows(textrix):

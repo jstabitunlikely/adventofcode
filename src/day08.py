@@ -2,6 +2,7 @@ import sys
 from itertools import permutations
 
 import inputfetcher
+from inputparsers import parse_matrix2d
 from Coordinate import Coordinate
 
 EXAMPLE = """\
@@ -22,7 +23,7 @@ EXAMPLE = """\
 
 def parse_input(example: bool) -> list[list[str]]:
     data = EXAMPLE if example else inputfetcher.fetch_input('2024', '8')
-    return [list(line) for line in data.split()]
+    return parse_matrix2d(data, str)
 
 
 def is_on_map(c: Coordinate, map_: list[list[str]]) -> bool:
