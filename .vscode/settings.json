@@ -1,3 +1,6 @@
 {
     "python.envFile": "${workspaceFolder}/.vscode/.env",
+    "autopep8.args": [
+        "--max-line-length=120"
+    ],
 }
