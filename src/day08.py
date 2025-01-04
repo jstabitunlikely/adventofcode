@@ -4,6 +4,7 @@ from itertools import permutations
 import inputfetcher
 from inputparsers import parse_matrix2d
 from Coordinate import Coordinate
+from utils import is_on_map
 
 EXAMPLE = """\
 ............
@@ -24,10 +25,6 @@ EXAMPLE = """\
 def parse_input(example: bool) -> list[list[str]]:
     data = EXAMPLE if example else inputfetcher.fetch_input('2024', '8')
     return parse_matrix2d(data, str)
-
-
-def is_on_map(c: Coordinate, map_: list[list[str]]) -> bool:
-    return 0 <= c.x < len(map_) and 0 <= c.y < len(map_[0])
 
 
 def find_antennas(map_: list[list[str]]) -> dict[list[Coordinate]]:

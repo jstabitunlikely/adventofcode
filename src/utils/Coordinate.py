@@ -30,12 +30,15 @@ class Coordinate:
     def __mul__(self, rhs: int) -> object:
         x = self.x * rhs
         y = self.y * rhs
-        return Coordinate(x,y)
+        return Coordinate(x, y)
 
     def __rmul__(self, lhs: int) -> object:
         x = lhs * self.x
         y = lhs * self.y
-        return Coordinate(x,y)
+        return Coordinate(x, y)
 
     def __repr__(self):
         return repr(f'({self.x},{self.y})')
+
+    def get_neighbor_coordinates(self) -> list[object]:
+        return [Coordinate(self.x-1, self.y), Coordinate(self.x, self.y+1), Coordinate(self.x+1, self.y), Coordinate(self.x, self.y-1)]
