@@ -25,6 +25,11 @@ Button B: X+27, Y+71
 Prize: X=18641, Y=10279\
 """
 
+CORRECTION = 10_000_000_000_000
+# REVISIT: how to find the right value for REL_TOL?
+# 1e-14 is an arbitrary value, but it works for the input
+REL_TOL = 1e-14
+
 
 def parse_input(example):
     data = EXAMPLE if example else inputfetcher.fetch_input('2024', '13')
@@ -39,13 +44,13 @@ def parse_input(example):
 
 
 def is_int(number):
-    return math.isclose(number, round(number))
+    return math.isclose(number, round(number), rel_tol=REL_TOL)
 
 
-def solve_1(machines):
+def solve_1_2(machines):
     cost = [3, 1]
     tokens = 0
-    for a, b in machines:
+    for i, [a, b] in enumerate(machines):
         x = linalg.solve(a, b, check_finite=False)
         # No solution at all
         if not len(x):
@@ -60,5 +65,8 @@ def solve_1(machines):
 if __name__ == "__main__":
     use_example = "--example" in sys.argv
     machines = parse_input(use_example)
-    result_1 = solve_1(machines)
+    result_1 = solve_1_2(machines)
     print(f'Result 1: {result_1}')
+    machines_2 = [[a, [bx+CORRECTION, by+CORRECTION]] for a, [bx, by] in machines]
+    result_2 = solve_1_2(machines_2)
+    print(f'Result 2: {result_2}')
