@@ -1,0 +1,95 @@
+import re
+import sys
+from functools import reduce
+from operator import mul
+
+import inputfetcher
+from Coordinate import Coordinate
+
+EXAMPLE = """\
+p=0,4 v=3,-3
+p=6,3 v=-1,-3
+p=10,3 v=-1,2
+p=2,0 v=2,-1
+p=0,0 v=1,3
+p=3,0 v=-2,-2
+p=7,6 v=-1,-3
+p=3,0 v=-1,-2
+p=9,3 v=2,3
+p=7,3 v=-1,2
+p=2,4 v=2,-3
+p=9,5 v=-3,-3\
+"""
+
+
+def parse_input(example: bool) -> list[list[Coordinate]]:
+    data = EXAMPLE if example else inputfetcher.fetch_input('2024', '14')
+    data = data.strip()
+    data = data.split('\n')
+    numbers_re = re.compile(r'[0-9-]+', flags=re.DOTALL)
+    robots = []
+    for px, py, vx, vy in [re.findall(numbers_re, m) for m in data]:
+        p = Coordinate(int(px), int(py))
+        v = Coordinate(int(vx), int(vy))
+        robots.append([p, v])
+    return robots
+
+
+def solve_1(robots: list[list[Coordinate]],
+            width: int,
+            height: int,
+            ticks: int) -> int:
+    # Advance the robots for the given number of ticks
+    robots = [
+        Coordinate(
+            (p.x + v.x * ticks) % width,
+            (p.y + v.y * ticks) % height
+        ) for p, v in robots
+    ]
+    # Count the number of robots in each quadrant
+    hw = width//2
+    hh = height//2
+    rpq = [
+        [r for r in robots if r.x > hw and r.y < hh],
+        [r for r in robots if r.x < hw and r.y < hh],
+        [r for r in robots if r.x > hw and r.y > hh],
+        [r for r in robots if r.x < hw and r.y > hh],
+    ]
+    return reduce(mul, map(len, rpq))
+
+
+def solve_2(robots: list[list[Coordinate]],
+            width: int,
+            height: int) -> int:
+    ticks = 0
+    for _ in range(100_000):
+        robots = [
+            [
+                Coordinate(
+                    (p.x + v.x) % width,
+                    (p.y + v.y) % height
+                ),
+                v,
+            ] for p, v in robots
+        ]
+        # TODO: What is a picture of a Christmas tree?
+        if False:
+            return ticks
+    else:
+        return -1
+
+
+if __name__ == "__main__":
+    use_example = "--example" in sys.argv
+    robots = parse_input(use_example)
+    if use_example:
+        width = 11
+        height = 7
+    else:
+        width = 101
+        height = 103
+    ticks = 100
+    result_1 = solve_1(robots, width, height, ticks)
+    print(f'Result 1: {result_1}')
+    result_2 = solve_2(robots, width, height)
+    print(f'Result 2: {result_2}')
