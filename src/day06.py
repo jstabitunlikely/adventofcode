@@ -2,6 +2,7 @@ import sys
 
 import inputfetcher
 from inputparsers import parse_matrix2d
+from utils import is_on_map
 
 EXAMPLE = """\
 ....#.....
@@ -31,16 +32,6 @@ def parse_input(use_example: bool):
     return parse_matrix2d(data, str)
 
 
-def is_on_map(px: int,
-              py: int) -> bool:
-    if px not in range(len(lab_map)):
-        return False
-    elif py not in range(len(lab_map[0])):
-        return False
-    else:
-        return True
-
-
 def turn_right(dir: int) -> int:
     return (dir + 1) % 4
 
@@ -63,7 +54,7 @@ def is_obstacle(px: int,
 def find_guard(lab_map: list[list]):
     for x, row in enumerate(lab_map):
         for y, e in enumerate(row):
-            if e in ["^", ">", "v", "<"]:
+            if e in DIRECTION:
                 return (DIRECTION.index(e), x, y)
 
 

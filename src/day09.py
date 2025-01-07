@@ -83,7 +83,6 @@ def solve_1_2(disk: list[int],
                     # Check if it fits only when whole files can be moved
                     if not move_files or files[top_fid] <= spaces[sid]:
                         compact_disk.append(top_fid)
-                        # print(f'{index:2d}x{top_fid:2d}')
                         # Decrement the file block counter to signal it's been put into place
                         files[top_fid] -= 1
                         # Decrement the space block counter to signal it's been filled
