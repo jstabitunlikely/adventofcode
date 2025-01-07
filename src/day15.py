@@ -99,9 +99,15 @@ class BigBox(Box):
 
     # REVISIT: could merge into Box while staying backward compatible with Part 1
 
-    # References to the two halves of the big box (ofc one of them will always be self).
-    left_half = None
-    right_half = None
+    other_half = None
+
+    def __init__(self,
+                 x: int,
+                 y: int,
+                 is_left_half: bool,
+                 warehouse: list[list]):
+        super().__init__(x, y, warehouse)
+        self.is_left_half = is_left_half
 
     # These flags prevent left and right halves infinitely nudging/pushing each other.
     is_nudge_in_progress = False
@@ -115,10 +121,8 @@ class BigBox(Box):
         else:
             self.is_push_in_progress = True
             if self.nudge(dir):
-                if self.is_left_half() and not self.right_half.is_push_in_progress:
-                    self.right_half.push(dir)
-                elif not self.left_half.is_push_in_progress:
-                    self.left_half.push(dir)
+                if not self.other_half.is_push_in_progress:
+                    self.other_half.push(dir)
                 super().push(dir)
             self.is_push_in_progress = False
             return (self.x, self.y)
@@ -128,24 +132,16 @@ class BigBox(Box):
         nx = self.x + self.DIRMAP[dir][0]
         ny = self.y + self.DIRMAP[dir][1]
         ok = self.warehouse[nx][ny].nudge(dir)
-        if self.is_left_half() and not self.right_half.is_nudge_in_progress:
-            ok &= self.right_half.nudge(dir)
-        elif not self.left_half.is_nudge_in_progress:
-            ok &= self.left_half.nudge(dir)
+        if not self.other_half.is_nudge_in_progress:
+            ok &= self.other_half.nudge(dir)
         self.is_nudge_in_progress = False
         return ok
 
-    def is_left_half(self):
-        return self == self.left_half
-
-    def is_right_half(self):
-        return self == self.right_half
-
     def __repr__(self):
-        if self.is_right_half():
-            return repr(']')
-        elif self.is_left_half():
+        if self.is_left_half:
             return repr('[')
+        else:
+            return repr(']')
 
 
 class Robot(Box):
@@ -192,12 +188,10 @@ def expand_warehouse(warehouse: list[list]) -> list[list]:
                 warehouse_big[x][y1] = Space(x, y1, warehouse_big)
                 warehouse_big[x][y2] = Space(x, y2, warehouse_big)
             elif c_type == Box:
-                warehouse_big[x][y1] = BigBox(x, y1, warehouse_big)
-                warehouse_big[x][y2] = BigBox(x, y2, warehouse_big)
-                warehouse_big[x][y1].left_half = warehouse_big[x][y1]
-                warehouse_big[x][y1].right_half = warehouse_big[x][y2]
-                warehouse_big[x][y2].left_half = warehouse_big[x][y1]
-                warehouse_big[x][y2].right_half = warehouse_big[x][y2]
+                warehouse_big[x][y1] = BigBox(x, y1, is_left_half=True, warehouse=warehouse_big)
+                warehouse_big[x][y2] = BigBox(x, y2, is_left_half=False, warehouse=warehouse_big)
+                warehouse_big[x][y1].other_half = warehouse_big[x][y2]
+                warehouse_big[x][y2].other_half = warehouse_big[x][y1]
     return warehouse_big
 
 
@@ -221,7 +215,7 @@ def solve_2(warehouse: list[list],
     for d in dirseq:
         rx, ry = warehouse[rx][ry].push(d)
     # Calculate GPS values
-    gps = [100*e.x + e.y for row in warehouse for e in row if type(e) == BigBox and e == e.left_half]
+    gps = [100*e.x + e.y for row in warehouse for e in row if type(e) == BigBox and e.is_left_half]
     return sum(gps)
 
 
