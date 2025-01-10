@@ -1,3 +1,4 @@
+import math
 from Coordinate import Coordinate
 
 def sign(num):
@@ -9,3 +10,6 @@ def sign(num):
 
 def is_on_map(c: Coordinate, map_: list[list[str]]) -> bool:
     return 0 <= c.x < len(map_) and 0 <= c.y < len(map_[0])
+
+def is_int(number, rel_tol=1e-9):
+    return math.isclose(number, round(number), rel_tol=rel_tol)

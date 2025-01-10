@@ -1,11 +1,11 @@
 import re
 import sys
 
-import math
 import numpy as np
 from scipy import linalg
 
 import inputfetcher
+from utils import is_int
 
 EXAMPLE = """\
 Button A: X+94, Y+34
@@ -43,10 +43,6 @@ def parse_input(example):
     return machines
 
 
-def is_int(number):
-    return math.isclose(number, round(number), rel_tol=REL_TOL)
-
-
 def solve_1_2(machines):
     cost = [3, 1]
     tokens = 0
@@ -56,7 +52,7 @@ def solve_1_2(machines):
         if not len(x):
             continue
         # No solution over integers
-        if not all([is_int(n) for n in x]):
+        if not all([is_int(n, REL_TOL) for n in x]):
             continue
         tokens += np.dot(cost, x)
     return int(tokens)
