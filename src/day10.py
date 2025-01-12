@@ -41,11 +41,11 @@ def get_height(position: Coordinate, map_: list[list[int]]) -> int:
     return map_[position.x][position.y]
 
 
-def hike(start: Coordinate, map_: list[list[int]]) -> list[Coordinate]:
+def hike(position: Coordinate, map_: list[list[int]]) -> list[Coordinate]:
     peaks = []
     for dir in [Coordinate(0, -1), Coordinate(0, 1), Coordinate(-1, 0), Coordinate(1, 0)]:
-        position_next = start + dir
-        height = get_height(start, map_)
+        position_next = position + dir
+        height = get_height(position, map_)
         height_next = get_height(position_next, map_)
         # Stay on the trail
         if height_next == height + 1:
