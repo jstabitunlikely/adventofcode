@@ -20,6 +20,7 @@ repos:
       hooks:
           - id: autopep8
             stages: [pre-commit]
+            args: ["--max-line-length=120", "--in-place"]
     - repo: https://github.com/compilerla/conventional-pre-commit
       rev: v4.0.0
       hooks:
