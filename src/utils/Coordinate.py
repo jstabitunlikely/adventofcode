@@ -46,7 +46,7 @@ class Coordinate:
         neighbors = [Coordinate(self.x-1, self.y), Coordinate(self.x, self.y+1),
                      Coordinate(self.x+1, self.y), Coordinate(self.x, self.y-1)]
         if x_max > 0:
-            neighbors = [n for n in neighbors if n.x <= x_max]
+            neighbors = [n for n in neighbors if 0 <= n.x <= x_max]
         if y_max > 0:
-            neighbors = [n for n in neighbors if n.y <= y_max]
+            neighbors = [n for n in neighbors if 0 <= n.y <= y_max]
         return neighbors
