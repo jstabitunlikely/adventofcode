@@ -4,7 +4,6 @@ import networkx as nx
 import inputfetcher
 from inputparsers import parse_matrix2d
 from Coordinate import Coordinate
-from utils import is_on_map
 
 EXAMPLE = """\
 ###############
@@ -52,6 +51,8 @@ def parse_input(example: bool) -> list[list[str]]:
 
 def build_maze_graph(maze: list[list[str]]) -> tuple[nx.Graph, Coordinate, Coordinate]:
     maze_graph = nx.Graph()
+    x_max = len(maze) - 1
+    y_max = len(maze[0]) - 1
     for i, row in enumerate(maze):
         for j, c in enumerate(row):
             # Add non-wall positions as nodes
@@ -61,7 +62,7 @@ def build_maze_graph(maze: list[list[str]]) -> tuple[nx.Graph, Coordinate, Coord
             maze_graph.add_node(node)
             # Add edges between non-wall nodes
             # Note: not the most efficient as it will add every edge twice (once from both directions)
-            neighbors = [np for np in node.get_neighbor_coordinates() if is_on_map(np, maze)]
+            neighbors = [np for np in node.get_neighbors(x_max, y_max)]
             for n in neighbors:
                 if maze[n.x][n.y] in '.ES':
                     maze_graph.add_edge(node, n)

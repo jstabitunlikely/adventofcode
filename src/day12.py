@@ -28,7 +28,7 @@ def parse_input(example: bool) -> list[list[str]]:
 def get_sides(p: Coordinate,
               garden: list[list[str]]) -> list[bool]:
     sides = []
-    for n in p.get_neighbor_coordinates():
+    for n in p.get_neighbors():
         if is_on_map(n, garden):
             sides.append(garden[n.x][n.y] != garden[p.x][p.y])
         else:
@@ -39,11 +39,13 @@ def get_sides(p: Coordinate,
 def solve_1_2(garden: list[list[str]],
               bulk_discount: bool = False) -> int:
     G = nx.Graph()
+    x_max = len(garden) - 1
+    y_max = len(garden[0]) - 1
     for i, row in enumerate(garden):
         for j, plot in enumerate(row):
             p = Coordinate(i, j)
             G.add_node(p)
-            neighbors = [np for np in p.get_neighbor_coordinates() if is_on_map(np, garden)]
+            neighbors = [np for np in p.get_neighbors(x_max, y_max)]
             for n in neighbors:
                 if plot == garden[n.x][n.y]:
                     d = 0

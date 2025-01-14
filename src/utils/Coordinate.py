@@ -40,5 +40,13 @@ class Coordinate:
     def __repr__(self):
         return repr(f'({self.x},{self.y})')
 
-    def get_neighbor_coordinates(self) -> list[object]:
-        return [Coordinate(self.x-1, self.y), Coordinate(self.x, self.y+1), Coordinate(self.x+1, self.y), Coordinate(self.x, self.y-1)]
+    def get_neighbors(self,
+                      x_max: int = 0,
+                      y_max: int = 0,) -> list[object]:
+        neighbors = [Coordinate(self.x-1, self.y), Coordinate(self.x, self.y+1),
+                     Coordinate(self.x+1, self.y), Coordinate(self.x, self.y-1)]
+        if x_max > 0:
+            neighbors = [n for n in neighbors if n.x <= x_max]
+        if y_max > 0:
+            neighbors = [n for n in neighbors if n.y <= y_max]
+        return neighbors
