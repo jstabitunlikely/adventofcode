@@ -57,23 +57,20 @@ def build_graph(ram_size: int,
 def solve_1(ram_size: int,
             bytz: list[Coordinate]) -> int:
     R = build_graph(ram_size, bytz)
-    start = Coordinate(0, 0)
-    end = Coordinate(ram_size-1, ram_size-1)
-    # REVISIT: runtime is ~35mins!
-    paths = list(nx.all_shortest_paths(R, start, end, method='bellman-ford'))
-    steps = min([len(p) for p in paths]) - 1
-    return steps
+    source = Coordinate(0, 0)
+    target = Coordinate(ram_size-1, ram_size-1)
+    return nx.shortest_path_length(R, source, target)
 
 
 def solve_2(ram_size: int,
             bytz: list[Coordinate]) -> int:
     empty_list = []
     R = build_graph(ram_size, empty_list)
-    start = Coordinate(0, 0)
-    end = Coordinate(ram_size-1, ram_size-1)
+    source = Coordinate(0, 0)
+    target = Coordinate(ram_size-1, ram_size-1)
     for b in bytz:
         R.remove_node(b)
-        if not nx.has_path(R, start, end):
+        if not nx.has_path(R, source, target):
             return ','.join(map(str, [b.y, b.x]))
 
 
