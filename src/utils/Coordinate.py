@@ -1,3 +1,6 @@
+from __future__ import annotations
+
+
 class Coordinate:
     x = 0
     y = 0
@@ -42,7 +45,7 @@ class Coordinate:
 
     def get_neighbors(self,
                       x_max: int = 0,
-                      y_max: int = 0,) -> list[object]:
+                      y_max: int = 0,) -> list[Coordinate]:
         neighbors = [Coordinate(self.x-1, self.y), Coordinate(self.x, self.y+1),
                      Coordinate(self.x+1, self.y), Coordinate(self.x, self.y-1)]
         if x_max > 0:
