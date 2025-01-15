@@ -5,7 +5,7 @@ import inputfetcher
 EXAMPLE = '2333133121414131402'
 
 
-def parse_input(example: bool) -> str:
+def parse_input(example: bool) -> list[int]:
     disk = EXAMPLE if example else inputfetcher.fetch_input('2024', '9')
     disk = [int(n) for n in list(disk.strip())]
     return disk

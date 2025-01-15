@@ -27,7 +27,7 @@ def parse_input(example: bool) -> list[list[str]]:
     return parse_matrix2d(data, str)
 
 
-def find_antennas(map_: list[list[str]]) -> dict[list[Coordinate]]:
+def find_antennas(map_: list[list[str]]) -> dict[str, list[Coordinate]]:
     antennas = {}
     for x, row in enumerate(map_):
         for y, c in enumerate(row):

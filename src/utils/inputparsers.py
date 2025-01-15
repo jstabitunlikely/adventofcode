@@ -3,8 +3,9 @@
 from typing import Callable
 
 
+# REVISIT: how to type hint a dinamically changing type
 def parse_matrix2d(data: str,
-                    type: Callable = int) -> list[list[type]]:
+                   type: Callable = int) -> list[list]:
     """
     Parses a string representation of a 2D matrix and converts it into a nested list of values.
 

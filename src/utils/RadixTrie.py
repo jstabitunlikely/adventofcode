@@ -12,10 +12,11 @@ from functools import cache
 
 class TrieNode:
 
-    def __init__(self, prefix=''):
+    def __init__(self,
+                 prefix: str = '') -> None:
         self.prefix = prefix
         self.is_leaf = False
-        self.children = {}
+        self.children: dict[str, TrieNode] = {}
 
     def __repr__(self):
         return repr(f'{self.prefix}')
@@ -23,10 +24,11 @@ class TrieNode:
 
 class Trie:
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.root = TrieNode("")
 
-    def add(self, word):
+    def add(self,
+            word: str) -> None:
         node = self.root
         for char in word:
             if char not in node.children.keys():
@@ -34,11 +36,13 @@ class Trie:
             node = node.children[char]
         node.is_leaf = True
 
-    def add_many(self, words):
+    def add_many(self,
+                 words: list[str]) -> None:
         for word in words:
             self.add(word)
 
-    def is_word(self, word):
+    def is_word(self,
+                word: str) -> int:
         node = self.root
         for char in word:
             if char not in node.children:
@@ -46,7 +50,8 @@ class Trie:
             node = node.children[char]
         return node.is_leaf
 
-    def is_sentence(self, sentence):
+    def is_sentence(self,
+                    sentence: str) -> bool:
         node = self.root
         for i, char in enumerate(sentence):
             if char not in node.children:
@@ -57,8 +62,9 @@ class Trie:
                     return True
         return node.is_leaf
 
-    # REVISIT: untested/unused function
-    def starts_with(self, prefix):
+    # REVISIT: untested function
+    def starts_with(self,
+                    prefix: str) -> bool:
         node = self.root
         for char in prefix:
             if char not in node.children:
@@ -66,26 +72,31 @@ class Trie:
             node = node.children[char]
         return True
 
-    def _count_nodes(self, node):
+    def _count_nodes(self,
+                     node: TrieNode) -> int:
         count = 1
         for child in node.children.values():
             if child is not {}:
                 count += self._count_nodes(child)
         return count
 
-    def size(self):
+    def size(self) -> int:
         return self._count_nodes(self.root)
 
 
 class RadixNode:
 
-    def __init__(self, root=None, prefix='', is_leaf=False):
+    def __init__(self,
+                 root=None,
+                 prefix='',
+                 is_leaf=False) -> None:
         self.prefix = prefix
         self.is_leaf = is_leaf
         self.root = self if root is None else root
         self.children = {}
 
-    def match_prefix(self, word):
+    def match_prefix(self,
+                     word: str) -> tuple[str, str, str]:
         i = 0
         for a, b in zip(self.prefix, word):
             if a != b:
@@ -94,7 +105,9 @@ class RadixNode:
         # matching, remaining_prefix, remaining_word
         return self.prefix[:i], self.prefix[i:], word[i:]
 
-    def add(self, word, is_repeating_prefix=False):
+    def add(self,
+            word: str,
+            is_repeating_prefix: bool = False) -> None:
         # Case 1: If the word is the prefix of the node
         # Solution: We set the current node as leaf
         if self.prefix == word and not self.is_leaf and not is_repeating_prefix:
@@ -136,7 +149,9 @@ class RadixNode:
                     self.children[matching[0]].add(remaining_word)
 
     @cache
-    def find(self, word, loop=False):
+    def find(self,
+             word: str,
+             loop: bool = False) -> int:
         children = [self.children.get(word[0], None)]
         if children[0] is None:
             if not self.is_leaf:
@@ -156,7 +171,8 @@ class RadixNode:
                         result += c.find(remaining_word, loop)
             return result
 
-    def print_trie(self, depth=0):
+    def print_trie(self,
+                   depth: int = 0) -> None:
         if self.prefix != "":
             print("-" * depth, self.prefix, "  (leaf)" if self.is_leaf else "")
         for child in self.children.values():
@@ -165,32 +181,38 @@ class RadixNode:
 
 class RadixTrie():
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.root = RadixNode()
 
-    def add(self, word):
+    def add(self,
+            word: str) -> None:
         self.root.add(word)
 
-    def add_many(self, words):
+    def add_many(self,
+                 words: list[str]) -> None:
         for word in words:
             self.add(word)
 
-    def is_word(self, word):
-        return self.root.find(word)
+    def is_word(self,
+                word: str) -> bool:
+        return self.root.find(word) > 0
 
-    def is_sentence(self, string):
+    def is_sentence(self,
+                    string: str) -> bool:
         return self.root.find(string, loop=True) > 0
 
-    def possible_sentences(self, string):
+    def possible_sentences(self,
+                           string: str) -> int:
         return self.root.find(string, loop=True)
 
-    def _count_nodes(self, node):
+    def _count_nodes(self,
+                     node: RadixNode) -> int:
         return sum([self._count_nodes(c) for c in node.children.values() if c != {}]) + 1
 
-    def size(self):
+    def size(self) -> int:
         return self._count_nodes(self.root)
 
-    def print_trie(self):
+    def print_trie(self) -> None:
         self.root.print_trie()
 
 

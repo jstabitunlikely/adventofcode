@@ -28,7 +28,7 @@ def parse_input(example: bool) -> tuple[list[str], list[str]]:
 
 
 def solve_1_2(words: list[str],
-              designs: list[str]) -> int:
+              designs: list[str]) -> tuple[int, int]:
     rt = RadixTrie.RadixTrie()
     rt.add_many(words)
     valid_sentences = [d for d in designs if rt.is_sentence(d)]

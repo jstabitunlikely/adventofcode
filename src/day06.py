@@ -3,6 +3,7 @@ import sys
 import inputfetcher
 from inputparsers import parse_matrix2d
 from utils import is_on_map
+from Coordinate import Coordinate
 
 EXAMPLE = """\
 ....#.....
@@ -47,15 +48,17 @@ def step(dir: int,
 def is_obstacle(px: int,
                 py: int,
                 lab_map: list[list]) -> bool:
-    if is_on_map(px, py):
+    if is_on_map(Coordinate(px, py), lab_map):
         return lab_map[px][py] == "#"
+    return False
 
 
-def find_guard(lab_map: list[list]):
+def find_guard(lab_map: list[list]) -> tuple[int, int, int]:
     for x, row in enumerate(lab_map):
         for y, e in enumerate(row):
             if e in DIRECTION:
                 return (DIRECTION.index(e), x, y)
+    return -1, -1, -1
 
 
 def walk(guard: tuple[int, int, int],
@@ -70,7 +73,7 @@ def walk(guard: tuple[int, int, int],
         # Look ahead
         px_next, py_next = step(dir, px, py)
         # Check if we're at the edge of the map
-        if not is_on_map(px_next, py_next):
+        if not is_on_map(Coordinate(px_next, py_next), lab_map):
             break
         # Check if there's an obstacle ahead
         while is_obstacle(px_next, py_next, lab_map):
@@ -88,7 +91,7 @@ def walk(guard: tuple[int, int, int],
     return visited, loop
 
 
-def solve_1_2(lab_map: list[list]) -> int:
+def solve_1_2(lab_map: list[list]) -> tuple[int, int]:
     guard = find_guard(lab_map)
     visited, _ = walk(guard, lab_map)
     num_visited = len(visited)
