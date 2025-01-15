@@ -3,7 +3,7 @@
 # With the following updates:
 #   - Fixed a bug: https://github.com/TheAlgorithms/Python/issues/11316
 #     A PR with an attempted fix was pending at the time of writing but it's faulty.
-#     (It doesn't deal with cases, where a prefix is repeated withing a word.)
+#     (It doesn't deal with cases, where a prefix is repeated within a word.)
 #   - New feature of looping back to root when searching i.e., finding sentences.
 #   - Separated trie and node classes and other minor changed.
 
