@@ -1,5 +1,4 @@
 import sys
-from itertools import permutations
 
 import inputfetcher
 import RadixTrie
@@ -28,35 +27,21 @@ def parse_input(example: bool) -> tuple[list[str], list[str]]:
     return words, designs
 
 
-def solve_1(words: list[str],
-            designs: list[str]) -> int:
+def solve_1_2(words: list[str],
+              designs: list[str]) -> int:
     rt = RadixTrie.RadixTrie()
     rt.add_many(words)
-
-    # Test 1: each words must be found
-    is_word = [rt.is_word(w) for w in words]
-    assert all(is_word)
-    # Test 2: generate n-word sentences and find them
-    n = 2
-    for w in permutations(words, n):
-        test_sentence = ''.join(w)
-        is_sentence = rt.is_sentence(test_sentence), f'{test_sentence}'
-        assert is_sentence, f'{test_sentence}'
-
-    return len([d for d in designs if rt.is_sentence(d)])
-
-
-def solve_2(words: list[str],
-            designs: list[str]) -> int:
-    return None
+    valid_sentences = [d for d in designs if rt.is_sentence(d)]
+    possible_sentences = [rt.possible_sentences(s) for s in valid_sentences]
+    return len(valid_sentences), sum(possible_sentences)
 
 
 if __name__ == "__main__":
     use_example = "--example" in sys.argv
     words, designs = parse_input(use_example)
-    result_1 = solve_1(words, designs)
+    result_1, result_2 = solve_1_2(words, designs)
     if use_example:
         assert result_1 == 6, result_1
+        assert result_2 == 16, result_2
     print(f'Result 1: {result_1}')
-    result_2 = solve_2(words, designs)
     print(f'Result 2: {result_2}')

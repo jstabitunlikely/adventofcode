@@ -140,20 +140,20 @@ class RadixNode:
         children = [self.children.get(word[0], None)]
         if children[0] is None:
             if not self.is_leaf:
-                return False
+                return 0
             else:
                 return self.root.find(word, loop)
         else:
-            result = False
+            result = 0
             if self.is_leaf and loop:
                 children.append(self.root.children.get(word[0], None))
             for c in children:
                 _, remaining_prefix, remaining_word = c.match_prefix(word)
                 if remaining_prefix == "":
                     if remaining_word == "":
-                        result |= c.is_leaf
+                        result += 1 if c.is_leaf else 0
                     else:
-                        result |= c.find(remaining_word, loop)
+                        result += c.find(remaining_word, loop)
             return result
 
     def print_trie(self, depth=0):
@@ -179,6 +179,9 @@ class RadixTrie():
         return self.root.find(word)
 
     def is_sentence(self, string):
+        return self.root.find(string, loop=True) > 0
+
+    def possible_sentences(self, string):
         return self.root.find(string, loop=True)
 
     def _count_nodes(self, node):
@@ -189,3 +192,17 @@ class RadixTrie():
 
     def print_trie(self):
         self.root.print_trie()
+
+
+# TODO: turns these into unit tests
+
+# # Test 1: each words must be found
+# is_word = [rt.is_word(w) for w in words]
+# assert all(is_word)
+
+# # Test 2: generate n-word sentences and find them
+# n = 2
+# for w in permutations(words, n):
+#     test_sentence = ''.join(w)
+#     is_sentence = rt.is_sentence(test_sentence), f'{test_sentence}'
+#     assert is_sentence, f'{test_sentence}'
