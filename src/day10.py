@@ -74,5 +74,8 @@ if __name__ == "__main__":
     map_ = parse_input(use_example)
     map_ = frame_map(map_)
     result_1, result_2 = solve_1_2(map_)
+    if use_example:
+        assert result_1 == 36, result_1
+        assert result_2 == 81, result_2
     print(f'Result 1: {result_1}')
     print(f'Result 2: {result_2}')

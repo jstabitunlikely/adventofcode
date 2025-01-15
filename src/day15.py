@@ -223,7 +223,11 @@ if __name__ == "__main__":
     use_example = "--example" in sys.argv
     warehouse, dirseq = parse_input(use_example)
     result_1 = solve_1(deepcopy(warehouse), dirseq)
+    if use_example:
+        assert result_1 == 10092, result_1
     print(f'Result 1: {result_1}')
     warehouse_2 = expand_warehouse(deepcopy(warehouse))
     result_2 = solve_2(warehouse_2, dirseq)
+    if use_example:
+        assert result_2 == 9021, result_2
     print(f'Result 2: {result_2}')

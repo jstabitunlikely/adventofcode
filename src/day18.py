@@ -84,6 +84,10 @@ if __name__ == "__main__":
         ram_size = 71
         byte_num = 1024
     result_1 = solve_1(ram_size, bytz[:byte_num])
+    if use_example:
+        assert result_1 == 22, result_1
     print(f'Result 1: {result_1}')
     result_2 = solve_2(ram_size, bytz)
+    if use_example:
+        assert result_2 == '6,1', result_2
     print(f'Result 2: {result_2}')

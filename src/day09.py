@@ -117,6 +117,10 @@ if __name__ == "__main__":
     use_example = "--example" in sys.argv
     disk = parse_input(use_example)
     result_1 = solve_1_2(disk)
+    if use_example:
+        assert result_1 == 1928, result_1
     print(f'Result 1: {result_1}')
     result_2 = solve_1_2(disk, move_files=True)
+    if use_example:
+        assert result_2 == 2858, result_2
     print(f'Result 2: {result_2}')

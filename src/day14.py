@@ -90,6 +90,10 @@ if __name__ == "__main__":
         height = 103
     ticks = 100
     result_1 = solve_1(robots, width, height, ticks)
+    if use_example:
+        assert result_1 == 12, result_1
     print(f'Result 1: {result_1}')
     result_2 = solve_2(robots, width, height)
+    if use_example:
+        assert result_2 == None, result_2
     print(f'Result 2: {result_2}')

@@ -62,7 +62,11 @@ if __name__ == "__main__":
     use_example = "--example" in sys.argv
     machines = parse_input(use_example)
     result_1 = solve_1_2(machines)
+    if use_example:
+        assert result_1 == 480, result_1
     print(f'Result 1: {result_1}')
     machines_2 = [[a, [bx+CORRECTION, by+CORRECTION]] for a, [bx, by] in machines]
     result_2 = solve_1_2(machines_2)
+    if use_example:
+        assert result_2 == 875318608908, result_2
     print(f'Result 2: {result_2}')

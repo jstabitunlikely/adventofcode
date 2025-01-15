@@ -233,7 +233,7 @@ def loop(A: int,
 
 
 def solve_1(prog: list[int],
-            regbank: dict[str:int]) -> str:
+            regbank: dict[str, int]) -> str:
     cpu = ChronospatialComputer(regbank)
     output = cpu.run(prog, trace=True)
     return ','.join([str(o) for o in output])
@@ -247,6 +247,10 @@ if __name__ == "__main__":
     use_example = "--example" in sys.argv
     prog, regbank = parse_input(use_example)
     result_1 = solve_1(prog, regbank)
+    if use_example:
+        assert result_1 == '4,6,3,5,6,3,5,2,1,0', result_1
     print(f'Result 1: {result_1}')
     result_2 = solve_2(prog)
+    # Don't have the solution to the second example, because it's a separate
+    # problem from the actual input, so nothing to check here.
     print(f'Result 2: {result_2}')

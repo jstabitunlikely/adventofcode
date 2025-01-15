@@ -56,6 +56,10 @@ if __name__ == "__main__":
     use_example = "--example" in sys.argv
     equations = parse_input(use_example)
     result_1 = solve_1_2(equations, cen=False)
+    if use_example:
+        assert result_1 == 3749, result_1
     print(f'Result 1: {result_1}')
     result_2 = solve_1_2(equations, cen=True)
+    if use_example:
+        assert result_2 == 11387, result_2
     print(f'Result 2: {result_2}')

@@ -1,3 +1,4 @@
+import sys
 import inputfetcher
 
 EXAMPLE = """47|53
@@ -58,7 +59,11 @@ def solve_1_2(ruleset, updates):
 
 
 if __name__ == "__main__":
-    ruleset, updates = parse_input()
+    use_example = "--example" in sys.argv
+    ruleset, updates = parse_input(use_example)
     result_1, result_2 = solve_1_2(ruleset, updates)
+    if use_example:
+        assert result_1 == 143, result_1
+        assert result_2 == 123, result_2
     print(f'Result 1: {result_1}')
     print(f'Result 2: {result_2}')

@@ -61,6 +61,10 @@ if __name__ == "__main__":
     use_example = "--example" in sys.argv
     map_ = parse_input(use_example)
     result_1 = solve_1_2(map_,)
+    if use_example:
+        assert result_1 == 14, result_1
     print(f'Result 1: {result_1}')
     result_2 = solve_1_2(map_, resonant_harmonics=True)
+    if use_example:
+        assert result_2 == 34, result_2
     print(f'Result 2: {result_2}')
