@@ -9,17 +9,17 @@ class Coordinate:
         self.x = x
         self.y = y
 
-    def __add__(self, rhs: object) -> object:
+    def __add__(self, rhs: Coordinate) -> Coordinate:
         x = self.x + rhs.x
         y = self.y + rhs.y
         return Coordinate(x, y)
 
-    def __sub__(self, rhs: object) -> object:
+    def __sub__(self, rhs: Coordinate) -> Coordinate:
         x = self.x - rhs.x
         y = self.y - rhs.y
         return Coordinate(x, y)
 
-    def __abs__(self) -> object:
+    def __abs__(self) -> Coordinate:
         x = abs(self.x)
         y = abs(self.y)
         return Coordinate(x, y)
@@ -27,15 +27,15 @@ class Coordinate:
     def __hash__(self) -> int:
         return hash((self.x, self.y))
 
-    def __eq__(self, rhs: object) -> bool:
+    def __eq__(self, rhs: Coordinate) -> bool:
         return self.x == rhs.x and self.y == rhs.y
 
-    def __mul__(self, rhs: int) -> object:
+    def __mul__(self, rhs: int) -> Coordinate:
         x = self.x * rhs
         y = self.y * rhs
         return Coordinate(x, y)
 
-    def __rmul__(self, lhs: int) -> object:
+    def __rmul__(self, lhs: int) -> Coordinate:
         x = lhs * self.x
         y = lhs * self.y
         return Coordinate(x, y)
