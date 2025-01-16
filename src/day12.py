@@ -36,8 +36,8 @@ def get_sides(p: Coordinate,
     return sides
 
 
-def solve_1_2(garden: list[list[str]],
-              bulk_discount: bool = False) -> int:
+def build_graph(garden: list[list[str]],
+                bulk_discount: bool = False) -> nx.Graph:
     G = nx.Graph()
     x_max = len(garden) - 1
     y_max = len(garden[0]) - 1
@@ -55,6 +55,12 @@ def solve_1_2(garden: list[list[str]],
                         sides_n = get_sides(n, garden)
                         d = sum([a & b for (a, b) in zip(sides_p, sides_n)])
                     G.add_edge(p, n, discount=d)
+    return G
+
+
+def solve_1_2(garden: list[list[str]],
+              bulk_discount: bool = False) -> int:
+    G = build_graph(garden, bulk_discount)
     regions = list(nx.connected_components(G))
     price = 0
     for r in regions:
