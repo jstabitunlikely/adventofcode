@@ -14,12 +14,12 @@ EXAMPLE = """\
 """
 
 
-def parse_input(use_example: bool) -> list[list[int], list[int]]:
+def parse_input(use_example: bool) -> list[tuple[int, list[int]]]:
     data = EXAMPLE if use_example else inputfetcher.fetch_input('2024', '7')
     equations = data.split('\n')
     equations = [e.split(':') for e in equations]
     equations = [[e[0], e[1].split()] for e in equations]
-    equations = [[int(e[0]), [int(n) for n in e[1]]] for e in equations]
+    equations = [(int(e[0]), [int(n) for n in e[1]]) for e in equations]
     return equations
 
 
@@ -43,7 +43,7 @@ def maths(tv: int,
     return a or m or c
 
 
-def solve_1_2(equations: list[list[int], list[int]],
+def solve_1_2(equations: list[tuple[int, list[int]]],
               cen: bool = False) -> int:
     cv = 0
     for tv, n in equations:

@@ -6,9 +6,8 @@ import sh
 
 def fetch_input(year, day, cache_dir='cache'):
     base_url = 'https://adventofcode.com/{}/day/{}/input'
-    git = sh.Command('git')
 
-    root = git('rev-parse --show-toplevel'.split()).strip()
+    root = sh.git('rev-parse --show-toplevel'.split()).strip()
     filename = f'{root}/{cache_dir}/{year}_{day}.txt'
 
     # Check if cached file exists and is not too old
