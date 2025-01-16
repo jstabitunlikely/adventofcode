@@ -43,6 +43,10 @@ class Coordinate:
     def __repr__(self):
         return repr(f'({self.x},{self.y})')
 
+    def get_distance(self, c: Coordinate) -> int:
+        diff = abs(self - c)
+        return diff.x + diff.y
+
     # Deprecated function
     # TODO: remove and use Matrix class instead
     def get_neighbors(self,

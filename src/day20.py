@@ -1,8 +1,8 @@
 import sys
-import networkx as nx
 
 import inputfetcher
 from Map import Map
+from Coordinate import Coordinate
 
 EXAMPLE = """\
 ###############
@@ -28,65 +28,48 @@ def parse_input(example: bool) -> Map:
     return Map(data, str)
 
 
-def build_graph(racetrack: Map) -> dict:
-    results = {
-        'graph': nx.Graph(),
-        'tunnels': [],
-    }
-    for p, tile in racetrack.enumerate_coordinates():
-        if tile == '#':
-            continue
-        # Add non-wall tiles as nodes
-        results['graph'].add_node(p)
-        # Add edges between non-wall tiles
-        neighbors = racetrack.get_neighbors(coordinate=p, direction="^>v<", distance=1)
-        for n in [c for c, t in neighbors if t in '.SE']:
-            results['graph'].add_edge(p, n)
-
-        # Find potential tunnels
-
-        # Part 1
-        neighbors = racetrack.get_neighbors_by_direction(coordinate=p, direction="^>v<", distance=2)
-        for _, n in neighbors.items():
-            # Second and/or first neighbor is already outside the map
-            if len(n) != 2:
-                continue
-            # First neighbor is a wall, second one is a race track again
-            # Note: n[x][0] is the coordinate, n[x][1] is the tile value
-            # REVISIT: a more readable abstraction instead of a simple tuple
-            elif n[0][1] == '#' and n[1][1] in '.SE':
-                # Every tunnel is discovered twice (from both ends), so filter it
-                if (n[1][0], p) not in results['tunnels']:
-                    results['tunnels'].append((p, n[1][0]))
-
-        # Part 2 needs a more sophisticated way to find the end of the tunnel
-        # TODO
-
-    return results
+def get_track(racetrack: Map,
+              start: Coordinate,
+              end: Coordinate) -> list[Coordinate]:
+    track = [start]
+    pp = start
+    p = start
+    while p != end:
+        pn = [n[0] for n in racetrack.get_neighbors(p, '^>v<') if n[1] in '.SE' and n[0] != pp][0]
+        track.append(pn)
+        pp = p
+        p = pn
+    return track
 
 
 def solve_1_2(racetrack: Map,
-              time_limit: int,
-              use_example: bool = False) -> int:
-    R = build_graph(racetrack)
-    cheats = [nx.shortest_path_length(R['graph'], t[0], t[1]) - 2 for t in R['tunnels']]
-    if use_example:
-        return sum(cheats)
-    return len([c for c in cheats if c >= 100])
+              cheat_max: int,
+              limit: int) -> int:
+    endpoints = racetrack.find_elements(['S', 'E'])
+    track = get_track(racetrack, endpoints['S'], endpoints['E'])
+    cheats = []
+    track_len = len(track)
+    for i, p1 in enumerate(track[:-1]):
+        if not i % (track_len//100+1):
+            print(f'.', end='')
+        # REVISIT: runtime is ~3m
+        p2s = [p2 for p2 in track[i+1:] if 0 < racetrack.get_distance(p1, p2) <= cheat_max]
+        cheat = [track[i:].index(p2) - racetrack.get_distance(p1, p2) for p2 in p2s]
+        cheat = [c for c in cheat if c > 0]
+        cheats.extend(cheat)
+    return len([c for c in cheats if c >= limit])
 
 
 if __name__ == "__main__":
     use_example = "--example" in sys.argv
     racetrack = parse_input(use_example)
-    result_1 = solve_1_2(racetrack, 2, use_example)
+    limit = 0 if use_example else 100
+    result_1 = solve_1_2(racetrack, 2, limit)
     if use_example:
-        # The example gives a trivial 0 to the actual question,
-        # so using the sum of all possible cheated picoseconds
-        assert result_1 == 382, f'Total cheats is {result_1}'
+        assert result_1 == 44, result_1
     print(f'Result 1: {result_1}')
-    result_2 = solve_1_2(racetrack, 20, use_example)
+    limit = 50 if use_example else 100
+    result_2 = solve_1_2(racetrack, 20, limit)
     if use_example:
-        # The example gives a trivial 0 to the actual question,
-        # so using the sum of all possible cheated picoseconds
-        assert result_2 == 16940, f'Total cheats is {result_2}'
+        assert result_2 == 285, result_2
     print(f'Result 2: {result_2}')

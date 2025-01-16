@@ -55,6 +55,14 @@ class Map:
                        coordinate: Coordinate) -> bool:
         return 0 <= coordinate.x < self.x_max and 0 <= coordinate.y < self.y_max
 
+    def find_elements(self,
+                      elements: list[Any]) -> dict[str, Any]:
+        results = {}
+        for p, e in self.enumerate_coordinates():
+            if e in elements:
+                results[e] = p
+        return results
+
     def get_element(self,
                     coordinate: Coordinate) -> Any:
         if not self.has_coordinate(coordinate):
@@ -99,3 +107,8 @@ class Map:
         for d, coordinates in coordinates_by_direction.items():
             neighbors_by_direction[d] = [(c, self.get_element(c)) for c in coordinates]
         return neighbors_by_direction
+
+    def get_distance(self,
+                     p1: Coordinate,
+                     p2: Coordinate) -> int:
+        return p1.get_distance(p2)
