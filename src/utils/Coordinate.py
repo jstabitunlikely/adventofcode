@@ -43,11 +43,14 @@ class Coordinate:
     def __repr__(self):
         return repr(f'({self.x},{self.y})')
 
+    # Deprecated function
+    # TODO: remove and use Matrix class instead
     def get_neighbors(self,
                       x_max: int = 0,
-                      y_max: int = 0,) -> list[Coordinate]:
-        neighbors = [Coordinate(self.x-1, self.y), Coordinate(self.x, self.y+1),
-                     Coordinate(self.x+1, self.y), Coordinate(self.x, self.y-1)]
+                      y_max: int = 0,
+                      dist: int = 1) -> list[Coordinate]:
+        neighbors = [Coordinate(self.x-dist, self.y), Coordinate(self.x, self.y+dist),
+                     Coordinate(self.x+dist, self.y), Coordinate(self.x, self.y-dist)]
         if x_max > 0:
             neighbors = [n for n in neighbors if 0 <= n.x <= x_max]
         if y_max > 0:
