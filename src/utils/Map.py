@@ -108,6 +108,21 @@ class Map:
             neighbors_by_direction[d] = [(c, self.get_element(c)) for c in coordinates]
         return neighbors_by_direction
 
+    def get_neighbor_coordinates_by_range(self,
+                                          coordinate: Coordinate,
+                                          range_: int) -> list[Coordinate]:
+        hood = []
+        for x in range(0, range_+1):
+            for y in range(0, (range_-x)+1):
+                hood.append(coordinate + Coordinate(+x, +y))
+                if x:
+                    hood.append(coordinate + Coordinate(-x, +y))
+                if y:
+                    hood.append(coordinate + Coordinate(+x, -y))
+                if x and y:
+                    hood.append(coordinate + Coordinate(-x, -y))
+        return [p for p in hood if self.has_coordinate(p)]
+
     def get_distance(self,
                      p1: Coordinate,
                      p2: Coordinate) -> int:
