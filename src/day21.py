@@ -55,14 +55,14 @@ def parse_keypad(pad: str) -> nx.Graph:
             key = p[(KH*i)+KH//2][(KW*j)+KW//2]
             if key != " ":
                 K.add_node(key)
-    clockwise = "<^>v"
-    counter_clockwise = ">v<^"
+    moves = "<^>v"
     # Enumerate over all the inner top-left key corners
     for i, row in enumerate(p[KH:-KH:KH]):
         for j, _ in enumerate(row[KW:-KW:KW]):
             x = KH*(i+1)
             y = KW*(j+1)
             keys = [
+                # In the order of moves above
                 p[x+KH//2][y+KW//2],  # bottom-right
                 p[x+KH//2][y-KW//2],  # bottom-left
                 p[x-KH//2][y-KW//2],  # top-left
@@ -73,8 +73,8 @@ def parse_keypad(pad: str) -> nx.Graph:
             for s, (k1, k2) in enumerate(zip(keys, keys[1:] + [keys[0]])):
                 if k1 == " " or k2 == " ":
                     continue
-                K.add_edge(k1, k2, move=clockwise[s])
-                K.add_edge(k2, k1, move=counter_clockwise[s])
+                K.add_edge(k1, k2, move=moves[s])
+                K.add_edge(k2, k1, move=moves[(s+2) % len(moves)])
     return K
 
 
@@ -96,7 +96,7 @@ def shortest_outer_sequence(sequence: str,
         for path in paths:
             edges = [(k1, k2) for k1, k2 in zip(path, path[1:])]
             outseq = ''.join(edge_attributes[e] for e in edges)
-            outseq += 'A'
+            outseq += START_KEY
             seq = shortest_outer_sequence(outseq, depth-1)
             if k1_k2_seq == '' or len(seq) < len(k1_k2_seq):
                 k1_k2_seq = seq
@@ -109,7 +109,7 @@ def solve_1_2(codes: list[str]) -> int:
     depth = len(layers)-1
     for code in codes:
         sequence = shortest_outer_sequence(code, depth)
-        complexity += len(sequence) * int(code[:-1])
+        complexity += len(sequence) * int(''.join([d for d in code if d.isdigit()]))
     return complexity
 
 
