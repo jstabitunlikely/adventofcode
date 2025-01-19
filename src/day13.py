@@ -46,7 +46,7 @@ def parse_input(example):
 def solve_1_2(machines):
     cost = [3, 1]
     tokens = 0
-    for i, [a, b] in enumerate(machines):
+    for [a, b] in machines:
         x = linalg.solve(a, b, check_finite=False)
         # No solution at all
         if not len(x):
