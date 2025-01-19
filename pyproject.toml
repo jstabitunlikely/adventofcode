@@ -1,0 +1,3 @@
+[[tool.mypy.overrides]]
+module = ["networkx.*", "scipy.*", "requests.*", "sh.*"]
+ignore_missing_imports = true

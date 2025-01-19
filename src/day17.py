@@ -1,7 +1,8 @@
-import inputfetcher
 import re
 import sys
+from typing import Optional
 
+import inputfetcher
 
 EXAMPLE = """\
 Register A: 729
@@ -22,7 +23,7 @@ Program: 0,3,5,4,3,0\
 
 class Instructions():
 
-    def __init__(self, regbank: dict[str:int]) -> None:
+    def __init__(self, regbank: dict[str, int]) -> None:
         self.regbank = regbank
 
         self.decoder = [
@@ -117,9 +118,9 @@ class Instructions():
 class ChronospatialComputer():
 
     def __init__(self,
-                 regbank: dict[str:int],
-                 instr: Instructions = None,
-                 prog: list[int] = None,
+                 regbank: dict[str, int],
+                 instr: Optional[Instructions] = None,
+                 prog: list[int] = [],
                  ) -> None:
         # Debug info
         self.stacktrace = ''
@@ -138,8 +139,8 @@ class ChronospatialComputer():
             self.prog = prog
 
     def run(self,
-            prog: list[int] = None,
-            trace: bool = False) -> str:
+            prog: list[int] = [],
+            trace: bool = False) -> list[int]:
         assert prog is not None or self.prog is not None, 'Program was not provided!'
         # Run the default program if none is provided
         if prog is None:
@@ -182,7 +183,7 @@ class ChronospatialComputer():
         return out
 
 
-def parse_input(example: bool) -> tuple[list[int], dict[str:int]]:
+def parse_input(example: bool) -> tuple[list[int], dict[str, int]]:
     data = EXAMPLE if example else inputfetcher.fetch_input('2024', '17')
     # Get the raw strings for registers and program
     data = data.strip()
@@ -235,7 +236,7 @@ def loop(A: int,
 def solve_1(prog: list[int],
             regbank: dict[str, int]) -> str:
     cpu = ChronospatialComputer(regbank)
-    output = cpu.run(prog, trace=True)
+    output = cpu.run(prog, trace=False)
     return ','.join([str(o) for o in output])
 
 

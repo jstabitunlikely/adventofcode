@@ -40,7 +40,7 @@ def solve_1(robots: list[list[Coordinate]],
             height: int,
             ticks: int) -> int:
     # Advance the robots for the given number of ticks
-    robots = [
+    robots_advanced = [
         Coordinate(
             (p.x + v.x * ticks) % width,
             (p.y + v.y * ticks) % height
@@ -50,10 +50,10 @@ def solve_1(robots: list[list[Coordinate]],
     hw = width//2
     hh = height//2
     rpq = [
-        [r for r in robots if r.x > hw and r.y < hh],
-        [r for r in robots if r.x < hw and r.y < hh],
-        [r for r in robots if r.x > hw and r.y > hh],
-        [r for r in robots if r.x < hw and r.y > hh],
+        [r for r in robots_advanced if r.x > hw and r.y < hh],
+        [r for r in robots_advanced if r.x < hw and r.y < hh],
+        [r for r in robots_advanced if r.x > hw and r.y > hh],
+        [r for r in robots_advanced if r.x < hw and r.y > hh],
     ]
     return reduce(mul, map(len, rpq))
 

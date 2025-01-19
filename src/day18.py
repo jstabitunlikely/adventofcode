@@ -35,13 +35,14 @@ EXAMPLE = """\
 
 def parse_input(example: bool) -> list[Coordinate]:
     data = EXAMPLE if example else inputfetcher.fetch_input('2024', '18')
+    data = data.strip()
     y_x = [c.split(',') for c in data.split('\n')]
     x_y = [Coordinate(int(x), int(y)) for y, x in y_x]
     return x_y
 
 
 def build_graph(ram_size: int,
-                bytz: list[Coordinate]) -> tuple[nx.Graph, Coordinate, Coordinate]:
+                bytz: list[Coordinate]) -> nx.Graph:
     xy_max = ram_size-1
     R = nx.Graph()
     for x in range(xy_max+1):
@@ -63,15 +64,15 @@ def solve_1(ram_size: int,
 
 
 def solve_2(ram_size: int,
-            bytz: list[Coordinate]) -> int:
-    empty_list = []
-    R = build_graph(ram_size, empty_list)
+            bytz: list[Coordinate]) -> str:
+    R = build_graph(ram_size, [])
     source = Coordinate(0, 0)
     target = Coordinate(ram_size-1, ram_size-1)
     for b in bytz:
         R.remove_node(b)
         if not nx.has_path(R, source, target):
-            return ','.join(map(str, [b.y, b.x]))
+            break
+    return ','.join(map(str, [b.y, b.x]))
 
 
 if __name__ == "__main__":

@@ -8,6 +8,7 @@
 #   - Separated trie and node classes and other minor changed.
 
 from functools import cache
+from typing import Optional
 
 
 class TrieNode:
@@ -93,7 +94,7 @@ class RadixNode:
         self.prefix = prefix
         self.is_leaf = is_leaf
         self.root = self if root is None else root
-        self.children = {}
+        self.children: dict[str, Optional[RadixNode]] = {}
 
     def match_prefix(self,
                      word: str) -> tuple[str, str, str]:
@@ -121,6 +122,7 @@ class RadixNode:
 
         else:
             child = self.children[word[0]]
+            assert child is not None
             matching, remaining_prefix, remaining_word = child.match_prefix(word)
 
             # Case 3: The node prefix is equal to the matching
@@ -137,16 +139,18 @@ class RadixNode:
             # Solution: Create a node in between both nodes, change
             # prefixes and add the new node for the remaining word
             else:
-                self.children[matching[0]].prefix = remaining_prefix
+                child = self.children[matching[0]]
+                assert child is not None
+                child.prefix = remaining_prefix
 
-                aux_node = self.children[matching[0]]
-                self.children[matching[0]] = RadixNode(root=self.root, prefix=matching, is_leaf=False)
-                self.children[matching[0]].children[remaining_prefix[0]] = aux_node
+                aux_node = child
+                child = RadixNode(root=self.root, prefix=matching, is_leaf=False)
+                child.children[remaining_prefix[0]] = aux_node
 
                 if remaining_word == "":
-                    self.children[matching[0]].is_leaf = True
+                    child.is_leaf = True
                 else:
-                    self.children[matching[0]].add(remaining_word)
+                    child.add(remaining_word)
 
     @cache
     def find(self,
@@ -162,13 +166,14 @@ class RadixNode:
             result = 0
             if self.is_leaf and loop:
                 children.append(self.root.children.get(word[0], None))
-            for c in children:
-                _, remaining_prefix, remaining_word = c.match_prefix(word)
+            for child in children:
+                assert child is not None
+                _, remaining_prefix, remaining_word = child.match_prefix(word)
                 if remaining_prefix == "":
                     if remaining_word == "":
-                        result += 1 if c.is_leaf else 0
+                        result += 1 if child.is_leaf else 0
                     else:
-                        result += c.find(remaining_word, loop)
+                        result += child.find(remaining_word, loop)
             return result
 
     def print_trie(self,
@@ -176,6 +181,7 @@ class RadixNode:
         if self.prefix != "":
             print("-" * depth, self.prefix, "  (leaf)" if self.is_leaf else "")
         for child in self.children.values():
+            assert child is not None
             child.print_trie(depth + 1)
 
 
@@ -207,7 +213,7 @@ class RadixTrie():
 
     def _count_nodes(self,
                      node: RadixNode) -> int:
-        return sum([self._count_nodes(c) for c in node.children.values() if c != {}]) + 1
+        return sum([self._count_nodes(c) for c in node.children.values() if c is not None and c != {}]) + 1
 
     def size(self) -> int:
         return self._count_nodes(self.root)

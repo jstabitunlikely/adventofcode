@@ -7,22 +7,22 @@ import inputfetcher
 EXAMPLE = """125 17"""
 
 
-def parse_input(example: bool) -> list[list[str]]:
+def parse_input(example: bool) -> list[int]:
     data = EXAMPLE if example else inputfetcher.fetch_input('2024', '11')
     return [int(n) for n in data.split()]
 
 
-def evolve(stone: int):
+def evolve(stone: int) -> list[int]:
     if not stone:
         return [1]
     if not (dc := math.floor(math.log10(stone)) + 1) % 2:
-        return [stone % (10**(dc/2)), stone // (10**(dc/2))]
+        return [stone % (10**(dc//2)), stone // (10**(dc//2))]
     return [stone * 2024]
 
 
 def blink(stone: int,
           blinks: int,
-          memo: dict) -> list[int]:
+          memo: dict) -> int:
     if not blinks:
         return 0
     if (m := memo.get((stone, blinks), None)) is not None:
@@ -36,7 +36,7 @@ def blink(stone: int,
 
 def solve_1_2(stones: list[int],
               blinks: int = 1) -> int:
-    memo = {}
+    memo: dict[tuple[int, int], int] = {}
     return len(stones) + sum([blink(s, blinks, memo) for s in stones])
 
 

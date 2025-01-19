@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 
-class Coordinate:
+class Coordinate():
     x = 0
     y = 0
 
@@ -27,7 +27,12 @@ class Coordinate:
     def __hash__(self) -> int:
         return hash((self.x, self.y))
 
-    def __eq__(self, rhs: Coordinate) -> bool:
+    def __eq__(self, rhs: object) -> bool:
+        if not isinstance(rhs, Coordinate):
+            # If we return NotImplemented, Python will automatically try
+            # running rhs.__eq__(self), in case 'rhs' knows what to do with
+            # Coordinate objects.
+            return NotImplemented
         return self.x == rhs.x and self.y == rhs.y
 
     def __mul__(self, rhs: int) -> Coordinate:

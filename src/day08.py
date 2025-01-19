@@ -28,7 +28,7 @@ def parse_input(example: bool) -> list[list[str]]:
 
 
 def find_antennas(map_: list[list[str]]) -> dict[str, list[Coordinate]]:
-    antennas = {}
+    antennas: dict[str, list[Coordinate]] = {}
     for x, row in enumerate(map_):
         for y, c in enumerate(row):
             if c == '.':

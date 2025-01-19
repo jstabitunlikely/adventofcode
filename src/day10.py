@@ -17,7 +17,7 @@ EXAMPLE = """\
 """
 
 
-def parse_input(example: bool) -> list[list[str]]:
+def parse_input(example: bool) -> list[list[int]]:
     data = EXAMPLE if example else inputfetcher.fetch_input('2024', '10')
     return parse_matrix2d(data, int)
 
@@ -58,7 +58,7 @@ def hike(position: Coordinate, map_: list[list[int]]) -> list[Coordinate]:
     return peaks
 
 
-def solve_1_2(map_: list[list[int]]) -> tuple[int]:
+def solve_1_2(map_: list[list[int]]) -> tuple[int, int]:
     trailheads = find_trailheads(map_)
     scores = 0
     ratings = 0

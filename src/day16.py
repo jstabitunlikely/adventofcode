@@ -49,7 +49,7 @@ def parse_input(example: bool) -> list[list[str]]:
     return parse_matrix2d(data, str)
 
 
-def build_maze_graph(maze: list[list[str]]) -> tuple[nx.Graph, Coordinate, Coordinate]:
+def build_maze_graph(maze: list[list[str]]) -> nx.Graph:
     maze_graph = nx.Graph()
     x_max = len(maze) - 1
     y_max = len(maze[0]) - 1
@@ -108,7 +108,7 @@ def assign_weights(Mp: nx.Graph,
     return Mp
 
 
-def solve_1_2(maze: list[list[str]]) -> int:
+def solve_1_2(maze: list[list[str]]) -> tuple[int, int]:
     # Let's create a graph M from the maze:
     #   - nodes: non-wall tiles of the maze e.g., u = (x1,y1), v = (x2,y2)
     #   - edges: interpreted as 'steps in the maze'
@@ -146,16 +146,16 @@ def solve_1_2(maze: list[list[str]]) -> int:
     min_score_to_end1 = min([nx.path_weight(Mp, path, 'weight') - 1 for path in paths_to_end1])
     min_score_to_end2 = min([nx.path_weight(Mp, path, 'weight') - 1 for path in paths_to_end2])
     if min_score_to_end1 < min_score_to_end2:
-        min_score = min_score_to_end1
+        min_score = int(min_score_to_end1)
         paths = paths_to_end1
     else:
-        min_score = min_score_to_end2
+        min_score = int(min_score_to_end2)
         paths = paths_to_end2
 
     # Get the number of unique positions in all the paths
     nodes = []
     # The nodes in M' are node pairs of M, flatten it
-    list(nodes.extend(node) for path in paths for node in path)
+    list(nodes.extend(node) for path in paths for node in path)  # type: ignore[func-returns-value]
     # Need to subtract the virtual nodes we added when building the original graph
     num_unique_nodes = len(set(nodes)) - 2
 

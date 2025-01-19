@@ -65,7 +65,7 @@ def solve_1_2(garden: list[list[str]],
     price = 0
     for r in regions:
         area = len(r)
-        sides = [4-d for _, d in G.degree(r)]
+        sides = [4-d for _, d in list(G.degree(r))]  # type:ignore[reportCallIssue]
         perimeter = sum(sides)
         if bulk_discount:
             discounts = [d["discount"] for (_, _, d) in G.edges(r, data=True)]

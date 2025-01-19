@@ -1,4 +1,5 @@
 from __future__ import annotations
+from typing import Optional, Union
 
 import sys
 from copy import deepcopy
@@ -53,7 +54,7 @@ class Wall(WarehouseElement):
     def push(self, dir: str) -> tuple[int, int]:
         return (self.x, self.y)
 
-    def nudge(self, dir: str) -> tuple[int, int]:
+    def nudge(self, dir: str) -> bool:
         return False
 
     def __repr__(self):
@@ -65,7 +66,7 @@ class Space(WarehouseElement):
     def push(self, dir: str) -> tuple[int, int]:
         return (-1, -1)
 
-    def nudge(self, dir: str) -> tuple[int, int]:
+    def nudge(self, dir: str) -> bool:
         return True
 
     def __repr__(self):
@@ -99,7 +100,7 @@ class BigBox(Box):
 
     # REVISIT: could merge into Box while staying backward compatible with Part 1
 
-    other_half = None
+    other_half: Optional[BigBox] = None
 
     def __init__(self,
                  x: int,
@@ -121,6 +122,7 @@ class BigBox(Box):
         else:
             self.is_push_in_progress = True
             if self.nudge(dir):
+                assert self.other_half is not None
                 if not self.other_half.is_push_in_progress:
                     self.other_half.push(dir)
                 super().push(dir)
@@ -132,6 +134,7 @@ class BigBox(Box):
         nx = self.x + self.DIRMAP[dir][0]
         ny = self.y + self.DIRMAP[dir][1]
         ok = self.warehouse[nx][ny].nudge(dir)
+        assert self.other_half is not None
         if not self.other_half.is_nudge_in_progress:
             ok &= self.other_half.nudge(dir)
         self.is_nudge_in_progress = False
@@ -157,7 +160,9 @@ def parse_input(example: bool) -> tuple[list[list], str]:
     wh_str = wh_str.split('\n')
     dirseq = dirseq.replace('\n', '')
     # Fill an empty warehouse
-    warehouse = [[None for _ in range(len(wh_str[0]))] for _ in range(len(wh_str))]
+    warehouse: list[list[Union[Robot, Wall, Space, Box, None]]] = [
+        [None for _ in range(len(wh_str[0]))] for _ in range(len(wh_str))
+    ]
     for x, row in enumerate(wh_str):
         for y, c in enumerate(row):
             if c == '@':
@@ -172,7 +177,9 @@ def parse_input(example: bool) -> tuple[list[list], str]:
 
 
 def expand_warehouse(warehouse: list[list]) -> list[list]:
-    warehouse_big = [[None for _ in range(2*len(warehouse[0]))] for _ in range(len(warehouse))]
+    warehouse_big: list[list[Union[Robot, Wall, Space, BigBox, None]]] = [
+        [None for _ in range(2*len(warehouse[0]))] for _ in range(len(warehouse))
+    ]
     for x, row in enumerate(warehouse):
         for y, c in enumerate(row):
             c_type = type(c)
@@ -190,8 +197,9 @@ def expand_warehouse(warehouse: list[list]) -> list[list]:
             elif c_type == Box:
                 warehouse_big[x][y1] = BigBox(x, y1, is_left_half=True, warehouse=warehouse_big)
                 warehouse_big[x][y2] = BigBox(x, y2, is_left_half=False, warehouse=warehouse_big)
-                warehouse_big[x][y1].other_half = warehouse_big[x][y2]
-                warehouse_big[x][y2].other_half = warehouse_big[x][y1]
+                # REVISIT how to type hint this
+                warehouse_big[x][y1].other_half = warehouse_big[x][y2]  # type:ignore[union-attr]
+                warehouse_big[x][y2].other_half = warehouse_big[x][y1]  # type:ignore[union-attr]
     return warehouse_big
 
 

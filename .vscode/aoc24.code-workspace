@@ -5,8 +5,5 @@
 		}
 	],
 	"settings": {
-		"mypy-type-checker.args": [
-			"\"--implicit-reexport\""
-		]
 	}
 }
