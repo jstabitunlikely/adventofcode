@@ -1,5 +1,6 @@
 import sys
 import networkx as nx
+from functools import cache
 
 import inputfetcher
 
@@ -12,6 +13,8 @@ EXAMPLE = """\
 """
 
 START_KEY = 'A'
+ENTER_KEY = 'A'
+assert START_KEY == ENTER_KEY, 'The solution relies on this assumption'
 
 NUMPAD = """\
 +---+---+---+
@@ -78,37 +81,73 @@ def parse_keypad(pad: str) -> nx.Graph:
     return K
 
 
-def shortest_outer_sequence(sequence: str,
-                            depth: int):
-    match layers[depth]:
+@cache
+def shortest_outer_sequence_dfs(sequence: str,
+                                layers: tuple[str, ...]) -> str:
+    match layers[-1]:
         case 'numpad':
             pad = numpad
         case 'dirpad':
             pad = dirpad
         case 'me':
             return sequence
-    edge_attributes = nx.get_edge_attributes(pad, "move")
     sequence = START_KEY + sequence
     outer_sequence = ''
     for key1, key2 in zip(sequence, sequence[1:]):
         paths = nx.all_shortest_paths(pad, key1, key2)
-        k1_k2_seq = ''
+        k1_k2_shortest = ''
         for path in paths:
             edges = [(k1, k2) for k1, k2 in zip(path, path[1:])]
-            outseq = ''.join(edge_attributes[e] for e in edges)
-            outseq += START_KEY
-            seq = shortest_outer_sequence(outseq, depth-1)
-            if k1_k2_seq == '' or len(seq) < len(k1_k2_seq):
-                k1_k2_seq = seq
-        outer_sequence += k1_k2_seq
+            k1_k2_outseq = ''.join(edge_attributes[pad][e] for e in edges)
+            k1_k2_outseq += ENTER_KEY
+            k1_k2_outseq = shortest_outer_sequence_dfs(k1_k2_outseq, layers[:-1])
+            if k1_k2_shortest == '' or len(k1_k2_outseq) < len(k1_k2_shortest):
+                k1_k2_shortest = k1_k2_outseq
+        outer_sequence += k1_k2_shortest
     return outer_sequence
 
 
-def solve_1_2(codes: list[str]) -> int:
+def shortest_outer_sequence_bfs(sequence: str,
+                                layers: tuple[str, ...]) -> str:
+    inner_sequence = sequence
+    for layer in layers[::-1]:
+        match layer:
+            case 'numpad':
+                pad = numpad
+            case 'dirpad':
+                pad = dirpad
+            case 'me':
+                break
+        inner_sequence = START_KEY + inner_sequence
+        outer_sequence = ''
+        for key1, key2 in zip(inner_sequence, inner_sequence[1:]):
+            paths = nx.all_shortest_paths(pad, key1, key2)
+            k1_k2_shortest = ''
+            for path in paths:
+                edges = [(k1, k2) for k1, k2 in zip(path, path[1:])]
+                k1_k2_outseq = ''.join(edge_attributes[pad][e] for e in edges)
+                k1_k2_outseq += ENTER_KEY
+                if k1_k2_shortest == '' or len(k1_k2_outseq) < len(k1_k2_shortest):
+                    k1_k2_shortest = k1_k2_outseq
+            outer_sequence += k1_k2_shortest
+        inner_sequence = outer_sequence
+    return inner_sequence
+
+
+def solve_1(codes: list[str],
+            layers: tuple[str, ...]) -> int:
     complexity = 0
-    depth = len(layers)-1
     for code in codes:
-        sequence = shortest_outer_sequence(code, depth)
+        sequence = shortest_outer_sequence_dfs(code, layers)
+        complexity += len(sequence) * int(''.join([d for d in code if d.isdigit()]))
+    return complexity
+
+
+def solve_2(codes: list[str],
+            layers: tuple[str, ...]) -> int:
+    complexity = 0
+    for code in codes:
+        sequence = shortest_outer_sequence_dfs(code, layers)
         complexity += len(sequence) * int(''.join([d for d in code if d.isdigit()]))
     return complexity
 
@@ -116,16 +155,21 @@ def solve_1_2(codes: list[str]) -> int:
 if __name__ == "__main__":
     use_example = "--example" in sys.argv
     codes = parse_input(use_example)
+
+    # Prepare some global variables for performance reasons
     global dirpad
     dirpad = parse_keypad(DIRPAD)
     global numpad
     numpad = parse_keypad(NUMPAD)
-    global layers
-    layers = LAYERS_1
-    result_1 = solve_1_2(codes)
+    global edge_attributes
+    edge_attributes = {
+        numpad: nx.get_edge_attributes(numpad, "move"),
+        dirpad: nx.get_edge_attributes(dirpad, "move")
+    }
+
+    result_1 = solve_1(codes, tuple(LAYERS_1))
     if use_example:
         assert result_1 == 126384, result_1
     print(f'Result 1: {result_1}')
-    layers = LAYERS_2
-    result_2 = solve_1_2(codes)
+    result_2 = solve_2(codes, tuple(LAYERS_2))
     print(f'Result 2: {result_2}')
