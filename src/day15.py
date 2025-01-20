@@ -195,11 +195,12 @@ def expand_warehouse(warehouse: list[list]) -> list[list]:
                 warehouse_big[x][y1] = Space(x, y1, warehouse_big)
                 warehouse_big[x][y2] = Space(x, y2, warehouse_big)
             elif c_type == Box:
-                warehouse_big[x][y1] = BigBox(x, y1, is_left_half=True, warehouse=warehouse_big)
-                warehouse_big[x][y2] = BigBox(x, y2, is_left_half=False, warehouse=warehouse_big)
-                # REVISIT how to type hint this
-                warehouse_big[x][y1].other_half = warehouse_big[x][y2]  # type:ignore[union-attr]
-                warehouse_big[x][y2].other_half = warehouse_big[x][y1]  # type:ignore[union-attr]
+                left_box = BigBox(x, y1, is_left_half=True, warehouse=warehouse_big)
+                right_box = BigBox(x, y2, is_left_half=False, warehouse=warehouse_big)
+                left_box.other_half = right_box
+                right_box.other_half = left_box
+                warehouse_big[x][y1] = left_box
+                warehouse_big[x][y2] = right_box
     return warehouse_big
 
 
