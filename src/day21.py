@@ -107,34 +107,6 @@ def shortest_outer_sequence_dfs(sequence: str,
     return outer_seq_length
 
 
-@DeprecationWarning
-def shortest_outer_sequence_bfs(sequence: str,
-                                layers: tuple[str, ...]) -> str:
-    inner_sequence = sequence
-    for layer in layers[::-1]:
-        match layer:
-            case 'numpad':
-                pad = numpad
-            case 'dirpad':
-                pad = dirpad
-            case 'me':
-                break
-        inner_sequence = START_KEY + inner_sequence
-        outer_sequence = ''
-        for key1, key2 in zip(inner_sequence, inner_sequence[1:]):
-            paths = nx.all_shortest_paths(pad, key1, key2)
-            k1_k2_shortest = ''
-            for path in paths:
-                edges = [(k1, k2) for k1, k2 in zip(path, path[1:])]
-                k1_k2_outseq = ''.join(edge_attributes[pad][e] for e in edges)
-                k1_k2_outseq += ENTER_KEY
-                if k1_k2_shortest == '' or len(k1_k2_outseq) < len(k1_k2_shortest):
-                    k1_k2_shortest = k1_k2_outseq
-            outer_sequence += k1_k2_shortest
-        inner_sequence = outer_sequence
-    return inner_sequence
-
-
 def solve_1_2(codes: list[str],
               layers: tuple[str, ...]) -> int:
     complexity = 0
