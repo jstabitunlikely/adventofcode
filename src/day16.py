@@ -44,45 +44,40 @@ EXAMPLE = """\
 """
 
 
-def parse_input(example: bool) -> list[list[str]]:
+def parse_input(example: bool) -> Map:
     data = EXAMPLE if example else inputfetcher.fetch_input('2024', '16')
-    return Map(data, str).map_
+    return Map(data, str)
 
 
-def build_maze_graph(maze: list[list[str]]) -> nx.Graph:
-    maze_graph = nx.Graph()
-    x_max = len(maze) - 1
-    y_max = len(maze[0]) - 1
-    for i, row in enumerate(maze):
-        for j, c in enumerate(row):
-            # Add non-wall positions as nodes
-            if c not in '.ES':
-                continue
-            node = Coordinate(i, j)
-            maze_graph.add_node(node)
-            # Add edges between non-wall nodes
-            # Note: not the most efficient as it will add every edge twice (once from both directions)
-            neighbors = [np for np in node.get_neighbors(x_max, y_max)]
-            for n in neighbors:
-                if maze[n.x][n.y] in '.ES':
-                    maze_graph.add_edge(node, n)
-            # Additional virtual nodes for the nodes before start/after end positions,
-            #   so the line graph will have an entry and (two possible) exit points.
-            # Note: assuming S/E are always in the bottom-left/top-right corners
-            if c == 'S':
-                # One node is enough, because deers are always facing East at Start
-                s = Coordinate(i, j-1)
-                maze_graph.add_node(s)
-                maze_graph.add_edge(s, node)
-            elif c == 'E':
-                # Two nodes, because we can arrive from two directions
-                e1 = Coordinate(i, j+1)
-                e2 = Coordinate(i-1, j)
-                maze_graph.add_node(e1)
-                maze_graph.add_node(e2)
-                maze_graph.add_edge(e1, node)
-                maze_graph.add_edge(e2, node)
-    return maze_graph
+def build_maze_graph(maze: Map) -> nx.Graph:
+    M = nx.Graph()
+    for p, p_tile in maze.enumerate_map():
+        # Add non-wall positions as nodes
+        if p_tile == '#':
+            continue
+        M.add_node(p)
+        # Add edges between non-wall nodes
+        # Note: not the most efficient as it will add every edge twice (once from both directions)
+        for n, n_tile in maze.get_neighbors(p, '^>v<'):
+            if n_tile != '#':
+                M.add_edge(p, n)
+        # Additional virtual nodes for the nodes before start/after end positions,
+        #   so the line graph will have an entry and (two possible) exit points.
+        # Note: assuming S/E are always in the bottom-left/top-right corners
+        if p_tile == 'S':
+            # One node is enough, because deers are always facing East at Start
+            s = p + maze.COMPASS['<']
+            M.add_node(s)
+            M.add_edge(s, p)
+        elif p_tile == 'E':
+            # Two nodes, because we can arrive from two directions
+            e1 = p + maze.COMPASS['>']
+            e2 = p + maze.COMPASS['^']
+            M.add_node(e1)
+            M.add_node(e2)
+            M.add_edge(e1, p)
+            M.add_edge(e2, p)
+    return M
 
 
 def assign_weights(Mp: nx.Graph,
@@ -108,7 +103,7 @@ def assign_weights(Mp: nx.Graph,
     return Mp
 
 
-def solve_1_2(maze: list[list[str]]) -> tuple[int, int]:
+def solve_1_2(maze: Map) -> tuple[int, int]:
     # Let's create a graph M from the maze:
     #   - nodes: non-wall tiles of the maze e.g., u = (x1,y1), v = (x2,y2)
     #   - edges: interpreted as 'steps in the maze'
@@ -123,16 +118,16 @@ def solve_1_2(maze: list[list[str]]) -> tuple[int, int]:
     assign_weights(Mp)
 
     # Start/end nodes in the M' graph
-    x_max = len(maze)-1
-    y_max = len(maze[0])-1
     # Note: rather than finding S/E again,
     #   we assume they're always in the bottom-left/top-right corners.
-    assert maze[x_max-1][1] == 'S', 'Start position is not found at the expected place'
-    assert maze[1][y_max-1] == 'E', 'End position is not found at the expected place'
-    start = (Coordinate(x_max-1, 1), Coordinate(x_max-1, 0))
+    s = Coordinate(maze.x_max-1, 1)
+    e = Coordinate(1, maze.y_max-1)
+    assert maze.get_element(s) == 'S', 'Start position is not found at the expected place'
+    assert maze.get_element(e) == 'E', 'End position is not found at the expected place'
+    start = (s, s + maze.COMPASS['<'])
     # Note: There are two possible endings, because we can reach E from two directions
-    end1 = (Coordinate(1, y_max-1), Coordinate(0, y_max-1))
-    end2 = (Coordinate(1, y_max-1), Coordinate(1, y_max))
+    end1 = (e, e + maze.COMPASS['>'])
+    end2 = (e, e + maze.COMPASS['^'])
 
     # Find the shortest paths to both possible endings
     paths_to_end1 = list(nx.all_shortest_paths(Mp, start, end1, weight='weight'))

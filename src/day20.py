@@ -45,7 +45,7 @@ def get_track(racetrack: Map,
 def solve_1_2(racetrack: Map,
               cheat_max: int,
               limit: int) -> int:
-    endpoints = racetrack.find_elements(['S', 'E'])
+    endpoints = racetrack.find_first_elements(['S', 'E'])
     track = get_track(racetrack, endpoints['S'], endpoints['E'])
     cheats = []
     track_len = len(track)
