@@ -1,11 +1,21 @@
 from __future__ import annotations
+from typing import Union
 
 
 class Coordinate():
-    x = 0
-    y = 0
 
-    def __init__(self, x: int, y: int):
+    DIRECTIONS = "^>v<"
+
+    COMPASS = {
+        DIRECTIONS[0]: (-1, 0),
+        DIRECTIONS[1]: (0, 1),
+        DIRECTIONS[2]: (1, 0),
+        DIRECTIONS[3]: (0, -1),
+    }
+
+    def __init__(self,
+                 x: int = 0,
+                 y: int = 0):
         self.x = x
         self.y = y
 
@@ -52,8 +62,18 @@ class Coordinate():
         diff = abs(self - c)
         return diff.x + diff.y
 
+    def get_neighbor(self, dir_: Union[str, int]) -> Coordinate:
+        if type(dir_) == str:
+            d = dir_
+        elif type(dir_) == int:
+            d = self.DIRECTIONS[dir_]
+        nx = self.x + self.COMPASS[d][0]
+        ny = self.y + self.COMPASS[d][1]
+        return Coordinate(nx, ny)
+
     # Deprecated function
     # TODO: remove and use Matrix class instead
+
     def get_neighbors(self,
                       x_max: int = 0,
                       y_max: int = 0,

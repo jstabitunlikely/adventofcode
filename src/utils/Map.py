@@ -17,11 +17,12 @@ class Map:
             'Map must be a list[list[type_]] or a string to be parsed into list[list[type_]!'
         self.x_max = len(self.map_) - 1
         self.y_max = len(self.map_[0]) - 1
+        self.DIRECTIONS = "^>v<"
         self.COMPASS = {
-            "^": Coordinate(-1, 0),
-            ">": Coordinate(0, 1),
-            "v": Coordinate(1, 0),
-            "<": Coordinate(0, -1),
+            self.DIRECTIONS[0]: Coordinate(-1, 0),
+            self.DIRECTIONS[1]: Coordinate(0, 1),
+            self.DIRECTIONS[2]: Coordinate(1, 0),
+            self.DIRECTIONS[3]: Coordinate(0, -1),
         }
 
     def parse(self,
@@ -53,7 +54,7 @@ class Map:
 
     def has_coordinate(self,
                        coordinate: Coordinate) -> bool:
-        return 0 <= coordinate.x < self.x_max and 0 <= coordinate.y < self.y_max
+        return 0 <= coordinate.x <= self.x_max and 0 <= coordinate.y <= self.y_max
 
     def find_elements(self,
                       elements: list[Any]) -> dict[str, Any]:
@@ -68,6 +69,13 @@ class Map:
         if not self.has_coordinate(coordinate):
             raise ValueError(f'Coordinate {coordinate} is not in the map_!')
         return self.map_[coordinate.x][coordinate.y]
+
+    def set_element(self,
+                    coordinate: Coordinate,
+                    value: Any):
+        if not self.has_coordinate(coordinate):
+            raise ValueError(f'Coordinate {coordinate} is not in the map_!')
+        self.map_[coordinate.x][coordinate.y] = value
 
     def get_neighbor_coordinates_by_direction(self,
                                               coordinate: Coordinate,

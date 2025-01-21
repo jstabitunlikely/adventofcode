@@ -1,8 +1,7 @@
 import sys
 
 import inputfetcher
-from inputparsers import parse_matrix2d
-from utils import is_on_map
+from Map import Map
 from Coordinate import Coordinate
 
 EXAMPLE = """\
@@ -18,100 +17,72 @@ EXAMPLE = """\
 ......#...\
 """
 
-DIRECTION = "^>v<"
-
-DIR_MAP = {
-    "^": (-1, 0),
-    ">": (0, 1),
-    "v": (1, 0),
-    "<": (0, -1),
-}
-
 
 def parse_input(use_example: bool):
     data = EXAMPLE if use_example else inputfetcher.fetch_input('2024', '6')
-    return parse_matrix2d(data, str)
+    return Map(data, str)
 
 
-def turn_right(dir: int) -> int:
-    return (dir + 1) % 4
+def turn_right(dir_: int) -> int:
+    return (dir_ + 1) % 4
 
 
-def step(dir: int,
-         px: int,
-         py: int) -> tuple[int, int]:
-    px_next = px + DIR_MAP[DIRECTION[dir]][0]
-    py_next = py + DIR_MAP[DIRECTION[dir]][1]
-    return (px_next, py_next)
-
-
-def is_obstacle(px: int,
-                py: int,
-                lab_map: list[list]) -> bool:
-    if is_on_map(Coordinate(px, py), lab_map):
-        return lab_map[px][py] == "#"
-    return False
-
-
-def find_guard(lab_map: list[list]) -> tuple[int, int, int]:
-    for x, row in enumerate(lab_map):
-        for y, e in enumerate(row):
-            if e in DIRECTION:
-                return (DIRECTION.index(e), x, y)
-    return -1, -1, -1
-
-
-def walk(guard: tuple[int, int, int],
-         lab_map: list[list]) -> tuple[set[tuple[int, int]], bool]:
-    dir, px, py = guard
+def walk(guard: dict[str, Coordinate],
+         lab: Map) -> tuple[set[Coordinate], bool]:
+    guard_ = list(guard.items())[0]
+    # Position of the guard
+    p = guard_[1]
+    # Direction of the guard as an integer
+    idir = p.DIRECTIONS.index(guard_[0])
     # Unique positions visited
-    visited = set([(px, py)])
+    visited = set([p])
     # Path history with directions
-    path = set([guard])
+    path = set([(idir, p)])
     loop = False
     while True:
         # Look ahead
-        px_next, py_next = step(dir, px, py)
+        p_next = p.get_neighbor(idir)
         # Check if we're at the edge of the map
-        if not is_on_map(Coordinate(px_next, py_next), lab_map):
+        if not lab.has_coordinate(p_next):
             break
         # Check if there's an obstacle ahead
-        while is_obstacle(px_next, py_next, lab_map):
-            dir = turn_right(dir)
-            px_next, py_next = step(dir, px, py)
+        while lab.get_element(p_next) == '#':
+            idir = turn_right(idir)
+            p_next = p.get_neighbor(idir)
         # Check if we're running in circles (for Part 2 only)
-        if (dir, px_next, py_next) in path:
+        if (idir, p_next) in path:
             loop = True
             break
         # Actually step ahead
-        px, py = px_next, py_next
+        p = p_next
         # Save current position
-        visited.add((px, py))
-        path.add((dir, px, py))
+        visited.add(p)
+        path.add((idir, p))
     return visited, loop
 
 
-def solve_1_2(lab_map: list[list]) -> tuple[int, int]:
-    guard = find_guard(lab_map)
-    visited, _ = walk(guard, lab_map)
+def solve_1_2(lab: Map) -> tuple[int, int]:
+    guard = lab.find_elements(['^', '>', 'v', '<'])
+    visited, _ = walk(guard, lab)
     num_visited = len(visited)
     # As per spec, we can't put an obstacle on the guard's starting position
-    visited.remove((guard[1], guard[2]))
+    guard_pos = list(guard.items())[0][1]
+    visited.remove(guard_pos)
     loops = 0
     # Try putting an obstacle onto each visited position (temporarily) and
     # do the walk again, checking if the new path has a loop
-    for (px, py) in visited:
-        lab_map[px][py] = "#"
-        _, loop = walk(guard, lab_map)
+    for p in visited:
+        lab.set_element(p, "#")
+        _, loop = walk(guard, lab)
         loops += 1 if loop else 0
-        lab_map[px][py] = "."
+        lab.set_element(p, ".")
     return num_visited, loops
 
 
 if __name__ == "__main__":
     use_example = "--example" in sys.argv
-    lab_map = parse_input(use_example)
-    result_1, result_2 = solve_1_2(lab_map)
+    lab = parse_input(use_example)
+    result_1, result_2 = solve_1_2(lab)
     if use_example:
         assert result_1 == 41, result_1
         assert result_2 == 6, result_2
