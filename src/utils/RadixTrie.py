@@ -145,6 +145,7 @@ class RadixNode:
 
                 aux_node = child
                 child = RadixNode(root=self.root, prefix=matching, is_leaf=False)
+                self.children[matching[0]] = child
                 child.children[remaining_prefix[0]] = aux_node
 
                 if remaining_word == "":
