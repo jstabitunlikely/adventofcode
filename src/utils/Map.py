@@ -56,16 +56,16 @@ class Map:
                        coordinate: Coordinate) -> bool:
         return 0 <= coordinate.x <= self.x_max and 0 <= coordinate.y <= self.y_max
 
-    def find_elements(self,
-                      elements: list[Any]) -> dict[str, Any]:
+    def find_first_elements(self,
+                            elements: list[Any]) -> dict[str, Any]:
         # TODO find_all_elements should be the only behavior, left this for backward compatibility
-        found = self.find_all_elements((elements))
+        found = self.find_elements((elements))
         for k, v in found.items():
             found[k] = v[0]  # type:ignore
         return found
 
-    def find_all_elements(self,
-                          elements: list[Any]) -> dict[Any, list[Coordinate]]:
+    def find_elements(self,
+                      elements: list[Any]) -> dict[Any, list[Coordinate]]:
         results: dict[Any, list[Coordinate]] = {}
         for p, e in self.enumerate_map():
             if e in elements:
@@ -91,6 +91,13 @@ class Map:
         if not self.has_coordinate(coordinate):
             raise ValueError(f'Coordinate {coordinate} is not in the map_!')
         self.map_[coordinate.x][coordinate.y] = value
+
+    def frame(self,
+              frame: Any = -1) -> None:
+        self.map_ = [[frame]*self.y_max] + self.map_ + [[frame]*self.y_max]
+        self.map_ = [[frame] + row + [frame] for row in self.map_]
+        self.x_max += 2
+        self.y_max += 2
 
     # TODO push down mindless math into Coordinate, leaving edge and value handling in Map
 

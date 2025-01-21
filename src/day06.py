@@ -62,7 +62,7 @@ def walk(guard: dict[str, Coordinate],
 
 
 def solve_1_2(lab: Map) -> tuple[int, int]:
-    guard = lab.find_elements(['^', '>', 'v', '<'])
+    guard = lab.find_first_elements(['^', '>', 'v', '<'])
     visited, _ = walk(guard, lab)
     num_visited = len(visited)
     # As per spec, we can't put an obstacle on the guard's starting position
