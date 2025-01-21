@@ -83,30 +83,31 @@ def parse_keypad(pad: str) -> nx.Graph:
 
 @cache
 def shortest_outer_sequence_dfs(sequence: str,
-                                layers: tuple[str, ...]) -> str:
+                                layers: tuple[str, ...]) -> int:
     match layers[-1]:
         case 'numpad':
             pad = numpad
         case 'dirpad':
             pad = dirpad
         case 'me':
-            return sequence
+            return len(sequence)
     sequence = START_KEY + sequence
-    outer_sequence = ''
+    outer_seq_length = 0
     for key1, key2 in zip(sequence, sequence[1:]):
         paths = nx.all_shortest_paths(pad, key1, key2)
-        k1_k2_shortest = ''
+        shortest = float('inf')
         for path in paths:
             edges = [(k1, k2) for k1, k2 in zip(path, path[1:])]
             k1_k2_outseq = ''.join(edge_attributes[pad][e] for e in edges)
             k1_k2_outseq += ENTER_KEY
-            k1_k2_outseq = shortest_outer_sequence_dfs(k1_k2_outseq, layers[:-1])
-            if k1_k2_shortest == '' or len(k1_k2_outseq) < len(k1_k2_shortest):
-                k1_k2_shortest = k1_k2_outseq
-        outer_sequence += k1_k2_shortest
-    return outer_sequence
+            length = shortest_outer_sequence_dfs(k1_k2_outseq, layers[:-1])
+            if length < shortest:
+                shortest = length
+        outer_seq_length += int(shortest)
+    return outer_seq_length
 
 
+@DeprecationWarning
 def shortest_outer_sequence_bfs(sequence: str,
                                 layers: tuple[str, ...]) -> str:
     inner_sequence = sequence
@@ -134,21 +135,12 @@ def shortest_outer_sequence_bfs(sequence: str,
     return inner_sequence
 
 
-def solve_1(codes: list[str],
-            layers: tuple[str, ...]) -> int:
+def solve_1_2(codes: list[str],
+              layers: tuple[str, ...]) -> int:
     complexity = 0
     for code in codes:
-        sequence = shortest_outer_sequence_dfs(code, layers)
-        complexity += len(sequence) * int(''.join([d for d in code if d.isdigit()]))
-    return complexity
-
-
-def solve_2(codes: list[str],
-            layers: tuple[str, ...]) -> int:
-    complexity = 0
-    for code in codes:
-        sequence = shortest_outer_sequence_dfs(code, layers)
-        complexity += len(sequence) * int(''.join([d for d in code if d.isdigit()]))
+        seq_length = shortest_outer_sequence_dfs(code, layers)
+        complexity += seq_length * int(''.join([d for d in code if d.isdigit()]))
     return complexity
 
 
@@ -167,9 +159,9 @@ if __name__ == "__main__":
         dirpad: nx.get_edge_attributes(dirpad, "move")
     }
 
-    result_1 = solve_1(codes, tuple(LAYERS_1))
+    result_1 = solve_1_2(codes, tuple(LAYERS_1))
     if use_example:
         assert result_1 == 126384, result_1
     print(f'Result 1: {result_1}')
-    result_2 = solve_2(codes, tuple(LAYERS_2))
+    result_2 = solve_1_2(codes, tuple(LAYERS_2))
     print(f'Result 2: {result_2}')
