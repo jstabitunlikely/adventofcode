@@ -1,11 +1,12 @@
 #!/usr/bin/python3
 
 import re
+import sys
 
 import inputfetcher
 from inputparsers import parse_matrix2d
 
-EXAMPLE1 = """MMMSXXMASM
+EXAMPLE_1 = """MMMSXXMASM
 MSAMXMSMSA
 AMXSXMAAMM
 MSAMASMSMX
@@ -16,7 +17,7 @@ SAXAMASAAA
 MAMMMXMMMM
 MXMXAXMASX"""
 
-EXAMPLE2 = """.M.S......
+EXAMPLE_2 = """.M.S......
 ..A..MSMS.
 .M.S.MAA..
 ..A.ASMSM.
@@ -28,15 +29,15 @@ M.M.M.M.M.
 .........."""
 
 
-def parse_input(use_example1=False, use_example2=False):
-    if use_example1:
-        data = EXAMPLE1
-    elif use_example2:
-        data = EXAMPLE2
-    else:
-        data = inputfetcher.fetch_input('2024', '4')
+def parse_input(use_example=0):
+    match use_example:
+        case 0:
+            data = inputfetcher.fetch_input('2024', '4')
+        case 1:
+            data = EXAMPLE_1
+        case 2:
+            data = EXAMPLE_2
     return parse_matrix2d(data, str)
-
 
 
 def count_in_rows(textrix):
@@ -86,8 +87,19 @@ def solve_2(textrix):
 
 
 if __name__ == "__main__":
-    textrix = parse_input()
+    use_example = "--example" in sys.argv
+    textrix = parse_input(use_example=0)
+    # Part 1
+    if use_example:
+        textrix = parse_input(use_example=1)
     result_1 = solve_1(textrix)
+    if use_example:
+        assert result_1 == 18, result_1
     print(f'Result 1: {result_1}')
+    # Part 2
+    if use_example:
+        textrix = parse_input(use_example=2)
     result_2 = solve_2(textrix)
+    if use_example:
+        assert result_2 == 9, result_2
     print(f'Result 2: {result_2}')
