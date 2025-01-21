@@ -71,8 +71,7 @@ class Coordinate():
         ny = self.y + self.COMPASS[d][1]
         return Coordinate(nx, ny)
 
-    # Deprecated function
-    # TODO: remove and use Matrix class instead
+    # TODO: pull in similar methods from Map
 
     def get_neighbors(self,
                       x_max: int = 0,

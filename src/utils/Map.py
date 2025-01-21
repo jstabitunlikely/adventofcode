@@ -77,6 +77,8 @@ class Map:
             raise ValueError(f'Coordinate {coordinate} is not in the map_!')
         self.map_[coordinate.x][coordinate.y] = value
 
+    # TODO push down mindless math into Coordinate, leaving edge and value handling in Map
+
     def get_neighbor_coordinates_by_direction(self,
                                               coordinate: Coordinate,
                                               direction: str,
