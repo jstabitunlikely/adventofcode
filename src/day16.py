@@ -2,7 +2,7 @@ import sys
 import networkx as nx
 
 import inputfetcher
-from inputparsers import parse_matrix2d
+from Map import Map
 from Coordinate import Coordinate
 
 EXAMPLE = """\
@@ -46,7 +46,7 @@ EXAMPLE = """\
 
 def parse_input(example: bool) -> list[list[str]]:
     data = EXAMPLE if example else inputfetcher.fetch_input('2024', '16')
-    return parse_matrix2d(data, str)
+    return Map(data, str).map_
 
 
 def build_maze_graph(maze: list[list[str]]) -> nx.Graph:

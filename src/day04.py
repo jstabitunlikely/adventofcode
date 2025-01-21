@@ -4,9 +4,11 @@ import re
 import sys
 
 import inputfetcher
-from inputparsers import parse_matrix2d
+from Map import Map
+from utils import transpose
 
-EXAMPLE_1 = """MMMSXXMASM
+EXAMPLE_1 = """\
+MMMSXXMASM
 MSAMXMSMSA
 AMXSXMAAMM
 MSAMASMSMX
@@ -15,9 +17,11 @@ XXAMMXXAMA
 SMSMSASXSS
 SAXAMASAAA
 MAMMMXMMMM
-MXMXAXMASX"""
+MXMXAXMASX\
+"""
 
-EXAMPLE_2 = """.M.S......
+EXAMPLE_2 = """\
+.M.S......
 ..A..MSMS.
 .M.S.MAA..
 ..A.ASMSM.
@@ -26,7 +30,8 @@ EXAMPLE_2 = """.M.S......
 S.S.S.S.S.
 .A.A.A.A..
 M.M.M.M.M.
-.........."""
+..........\
+"""
 
 
 def parse_input(use_example=0):
@@ -37,7 +42,7 @@ def parse_input(use_example=0):
             data = EXAMPLE_1
         case 2:
             data = EXAMPLE_2
-    return parse_matrix2d(data, str)
+    return Map(data, str).map_
 
 
 def count_in_rows(textrix):
@@ -46,10 +51,6 @@ def count_in_rows(textrix):
     for row in textrix:
         count += len(re.findall(xmas_re, "".join(row)))
     return count
-
-
-def transpose(l):
-    return list(map(list, zip(*l)))
 
 
 def solve_1(textrix):

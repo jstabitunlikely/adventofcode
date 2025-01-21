@@ -13,3 +13,7 @@ def sign(num: int) -> int:
 def is_int(number,
            rel_tol=1e-9):
     return math.isclose(number, round(number), rel_tol=rel_tol)
+
+
+def transpose(l):
+    return list(map(list, zip(*l)))

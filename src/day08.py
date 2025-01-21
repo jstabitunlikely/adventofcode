@@ -2,9 +2,8 @@ import sys
 from itertools import permutations
 
 import inputfetcher
-from inputparsers import parse_matrix2d
+from Map import Map
 from Coordinate import Coordinate
-from utils import is_on_map
 
 EXAMPLE = """\
 ............
@@ -22,32 +21,31 @@ EXAMPLE = """\
 """
 
 
-def parse_input(example: bool) -> list[list[str]]:
+def parse_input(example: bool) -> Map:
     data = EXAMPLE if example else inputfetcher.fetch_input('2024', '8')
-    return parse_matrix2d(data, str)
+    return Map(data, str)
 
 
-def find_antennas(map_: list[list[str]]) -> dict[str, list[Coordinate]]:
+def find_antennas(grid: Map) -> dict[str, list[Coordinate]]:
     antennas: dict[str, list[Coordinate]] = {}
-    for x, row in enumerate(map_):
-        for y, c in enumerate(row):
-            if c == '.':
-                continue
-            if c not in antennas.keys():
-                antennas[c] = []
-            antennas[c].append(Coordinate(x, y))
+    for c, v in grid.enumerate_map():
+        if v == '.':
+            continue
+        if v not in antennas.keys():
+            antennas[v] = []
+        antennas[v].append(c)
     return antennas
 
 
-def solve_1_2(map_: list[list[str]],
+def solve_1_2(grid: Map,
               resonant_harmonics: bool = False) -> int:
     antinodes = set()
-    for antlist in find_antennas(map_).values():
+    for antlist in find_antennas(grid).values():
         for ant1, ant2 in list(permutations(antlist, 2)):
             n = 1 if resonant_harmonics else 2
             while True:
                 node = n*ant1 - (n-1)*ant2
-                if is_on_map(node, map_):
+                if grid.has_coordinate(node):
                     antinodes.add(node)
                 else:
                     break
@@ -59,12 +57,12 @@ def solve_1_2(map_: list[list[str]],
 
 if __name__ == "__main__":
     use_example = "--example" in sys.argv
-    map_ = parse_input(use_example)
-    result_1 = solve_1_2(map_,)
+    grid = parse_input(use_example)
+    result_1 = solve_1_2(grid,)
     if use_example:
         assert result_1 == 14, result_1
     print(f'Result 1: {result_1}')
-    result_2 = solve_1_2(map_, resonant_harmonics=True)
+    result_2 = solve_1_2(grid, resonant_harmonics=True)
     if use_example:
         assert result_2 == 34, result_2
     print(f'Result 2: {result_2}')

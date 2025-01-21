@@ -1,7 +1,7 @@
 import sys
 
 import inputfetcher
-from inputparsers import parse_matrix2d
+from Map import Map
 from Coordinate import Coordinate
 
 
@@ -19,7 +19,7 @@ EXAMPLE = """\
 
 def parse_input(example: bool) -> list[list[int]]:
     data = EXAMPLE if example else inputfetcher.fetch_input('2024', '10')
-    return parse_matrix2d(data, int)
+    return Map(data, int).map_
 
 
 def frame_map(map_: list[list[int]]) -> list[list[int]]:

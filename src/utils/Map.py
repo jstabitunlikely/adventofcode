@@ -47,7 +47,7 @@ class Map:
         map_ = [list(map(type_, line)) for line in map_]
         return map_
 
-    def enumerate_coordinates(self) -> Generator[tuple[Coordinate, Any], None, None]:
+    def enumerate_map(self) -> Generator[tuple[Coordinate, Any], None, None]:
         for x, row in enumerate(self.map_):
             for y, n in enumerate(row):
                 yield Coordinate(x, y), n
@@ -58,16 +58,31 @@ class Map:
 
     def find_elements(self,
                       elements: list[Any]) -> dict[str, Any]:
-        results = {}
-        for p, e in self.enumerate_coordinates():
+        # TODO find_all_elements should be the only behavior, left this for backward compatibility
+        found = self.find_all_elements((elements))
+        for k, v in found.items():
+            found[k] = v[0]  # type:ignore
+        return found
+
+    def find_all_elements(self,
+                          elements: list[Any]) -> dict[Any, list[Coordinate]]:
+        results: dict[Any, list[Coordinate]] = {}
+        for p, e in self.enumerate_map():
             if e in elements:
-                results[e] = p
+                if e not in results.keys():
+                    results[e] = [p]
+                else:
+                    results[e].append(p)
         return results
 
     def get_element(self,
-                    coordinate: Coordinate) -> Any:
+                    coordinate: Coordinate,
+                    check_edges: bool = True) -> Any:
         if not self.has_coordinate(coordinate):
-            raise ValueError(f'Coordinate {coordinate} is not in the map_!')
+            if check_edges:
+                raise ValueError(f'Coordinate {coordinate} is not in the map_!')
+            else:
+                return None
         return self.map_[coordinate.x][coordinate.y]
 
     def set_element(self,
@@ -82,19 +97,22 @@ class Map:
     def get_neighbor_coordinates_by_direction(self,
                                               coordinate: Coordinate,
                                               direction: str,
-                                              distance: int = 1) -> dict[str, list[Coordinate]]:
+                                              distance: int = 1,
+                                              check_edges: bool = True) -> dict[str, list[Coordinate]]:
         neighbors = {}
         for d in direction:
             neighbors[d] = [coordinate + n*self.COMPASS[d] for n in range(1, distance+1)]
-            neighbors[d] = [n for n in neighbors[d] if self.has_coordinate(n)]
+            if check_edges:
+                neighbors[d] = [n for n in neighbors[d] if self.has_coordinate(n)]
         return neighbors
 
     def get_neighbor_coordinates(self,
                                  coordinate: Coordinate,
                                  direction: str,
-                                 distance: int = 1) -> list[Coordinate]:
+                                 distance: int = 1,
+                                 check_edges: bool = True) -> list[Coordinate]:
         coordinates_by_direction = self.get_neighbor_coordinates_by_direction(
-            coordinate=coordinate, direction=direction, distance=distance)
+            coordinate=coordinate, direction=direction, distance=distance, check_edges=check_edges)
         coordinates = []
         for c in coordinates_by_direction.values():
             coordinates.extend(c)
@@ -103,16 +121,19 @@ class Map:
     def get_neighbors(self,
                       coordinate: Coordinate,
                       direction: str,
-                      distance: int = 1) -> list[tuple[Coordinate, Any]]:
-        coordinates = self.get_neighbor_coordinates(coordinate=coordinate, direction=direction, distance=distance)
-        return [(c, self.get_element(c)) for c in coordinates]
+                      distance: int = 1,
+                      check_edges: bool = True) -> list[tuple[Coordinate, Any]]:
+        coordinates = self.get_neighbor_coordinates(
+            coordinate=coordinate, direction=direction, distance=distance, check_edges=check_edges)
+        return [(c, self.get_element(c, check_edges=False)) for c in coordinates]
 
     def get_neighbors_by_direction(self,
                                    coordinate: Coordinate,
                                    direction: str,
-                                   distance: int = 1) -> dict[str, list[tuple[Coordinate, Any]]]:
+                                   distance: int = 1,
+                                   check_edges: bool = True) -> dict[str, list[tuple[Coordinate, Any]]]:
         coordinates_by_direction = self.get_neighbor_coordinates_by_direction(
-            coordinate=coordinate, direction=direction, distance=distance)
+            coordinate=coordinate, direction=direction, distance=distance, check_edges=check_edges)
         neighbors_by_direction = {}
         for d, coordinates in coordinates_by_direction.items():
             neighbors_by_direction[d] = [(c, self.get_element(c)) for c in coordinates]
@@ -120,7 +141,8 @@ class Map:
 
     def get_neighbor_coordinates_by_range(self,
                                           coordinate: Coordinate,
-                                          range_: int) -> list[Coordinate]:
+                                          range_: int,
+                                          check_edges: bool = True) -> list[Coordinate]:
         hood = []
         for x in range(0, range_+1):
             for y in range(0, (range_-x)+1):
@@ -131,7 +153,9 @@ class Map:
                     hood.append(coordinate + Coordinate(+x, -y))
                 if x and y:
                     hood.append(coordinate + Coordinate(-x, -y))
-        return [p for p in hood if self.has_coordinate(p)]
+        if check_edges:
+            hood = [p for p in hood if self.has_coordinate(p)]
+        return hood
 
     def get_distance(self,
                      p1: Coordinate,
