@@ -25,9 +25,7 @@ def parse_input(example: bool) -> Map:
 
 def find_trailheads(map_: Map,
                     trailhead: int = 0) -> list[Coordinate]:
-    found = map_.find_elements([trailhead]).values()
-    found_values = list(found)
-    return found_values[0]
+    return map_.find_all_element(trailhead)
 
 
 def hike(position: Coordinate,

@@ -56,23 +56,32 @@ class Map:
                        coordinate: Coordinate) -> bool:
         return 0 <= coordinate.x <= self.x_max and 0 <= coordinate.y <= self.y_max
 
-    def find_first_elements(self,
-                            elements: list[Any]) -> dict[str, Any]:
-        # TODO find_all_elements should be the only behavior, left this for backward compatibility
-        found = self.find_elements((elements))
-        for k, v in found.items():
-            found[k] = v[0]  # type:ignore
-        return found
+    def find_all_element(self,
+                         element: Any) -> list[Coordinate]:
+        return [p for p, e in self.enumerate_map() if e == element]
 
-    def find_elements(self,
-                      elements: list[Any]) -> dict[Any, list[Coordinate]]:
+    def find_first_element(self,
+                           element: Any) -> Coordinate:
+        return self.find_all_element(element)[0]
+
+    def find_first_elements(self,
+                            elements: list[Any]) -> dict[Any, Coordinate]:
+        results: dict[Any, Coordinate] = {}
+        found = self.find_all_elements(elements)
+        for k, v in found.items():
+            results[k] = v[0]  # type:ignore
+        return results
+
+    def find_all_elements(self,
+                          elements: list[Any]) -> dict[Any, list[Coordinate]]:
         results: dict[Any, list[Coordinate]] = {}
         for p, e in self.enumerate_map():
-            if e in elements:
-                if e not in results.keys():
-                    results[e] = [p]
-                else:
-                    results[e].append(p)
+            if e not in elements:
+                continue
+            if e not in results.keys():
+                results[e] = [p]
+            else:
+                results[e].append(p)
         return results
 
     def get_element(self,

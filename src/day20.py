@@ -48,11 +48,11 @@ def solve_1_2(racetrack: Map,
     endpoints = racetrack.find_first_elements(['S', 'E'])
     track = get_track(racetrack, endpoints['S'], endpoints['E'])
     cheats = []
-    track_len = len(track)
+    # track_len = len(track)
     for i, p1 in enumerate(track[:-1]):
-        if not i % (track_len//100+1):
-            print(f'.', end='')
         # REVISIT: runtime is ~3m
+        # if not i % (track_len//100+1):
+        #     print(f'.', end='')
         p2s = [p2 for p2 in track[i+1:] if 0 < racetrack.get_distance(p1, p2) <= cheat_max]
         cheat = [track[i:].index(p2) - racetrack.get_distance(p1, p2) for p2 in p2s]
         cheat = [c for c in cheat if c > 0]
