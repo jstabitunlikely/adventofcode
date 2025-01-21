@@ -5,6 +5,7 @@ from operator import mul
 
 import inputfetcher
 from Coordinate import Coordinate
+from Map import Map
 
 EXAMPLE = """\
 p=0,4 v=3,-3
@@ -22,7 +23,7 @@ p=9,5 v=-3,-3\
 """
 
 
-def parse_input(example: bool) -> list[list[Coordinate]]:
+def parse_input(example: bool) -> list[tuple[Coordinate, Coordinate]]:
     data = EXAMPLE if example else inputfetcher.fetch_input('2024', '14')
     data = data.strip()
     data = data.split('\n')
@@ -31,11 +32,22 @@ def parse_input(example: bool) -> list[list[Coordinate]]:
     for px, py, vx, vy in [re.findall(numbers_re, m) for m in data]:
         p = Coordinate(int(px), int(py))
         v = Coordinate(int(vx), int(vy))
-        robots.append([p, v])
+        robots.append((p, v))
     return robots
 
 
-def solve_1(robots: list[list[Coordinate]],
+def draw(robots: list[Coordinate],
+         width: int,
+         height: int):
+    # Note: swapping x-y for proper visualization
+    M = [['.'] * width for _ in range(height)]
+    for r in robots:
+        M[r.y][r.x] = '*'
+    for row in M:
+        print(''.join(row))
+
+
+def solve_1(robots: list[tuple[Coordinate, Coordinate]],
             width: int,
             height: int,
             ticks: int) -> int:
@@ -58,25 +70,27 @@ def solve_1(robots: list[list[Coordinate]],
     return reduce(mul, map(len, rpq))
 
 
-def solve_2(robots: list[list[Coordinate]],
+def solve_2(robots: list[tuple[Coordinate, Coordinate]],
             width: int,
             height: int) -> int:
-    ticks = 0
-    for _ in range(100_000):
-        robots = [
-            [
-                Coordinate(
-                    (p.x + v.x) % width,
-                    (p.y + v.y) % height
-                ),
-                v,
-            ] for p, v in robots
+    robots_adv, velocity = zip(*robots)
+    window = 50
+    threshold = 0.50 * len(robots)
+    i = 1
+    while True:
+        # REVISIT type hint issue coming from unzip
+        robots_adv = [
+            Coordinate(
+                (p.x + velocity[j].x) % width,
+                (p.y + velocity[j].y) % height
+            ) for j, p in enumerate(robots_adv)
         ]
-        # TODO: What is a picture of a Christmas tree?
-        if False:
-            return ticks
-    else:
-        return -1
+        for x in range(height-window):
+            w = [r for r in robots_adv if x <= r.x <= x+window and x <= r.y <= x+window]
+            if len(w) > threshold:
+                # draw(robots_adv, width, height)
+                return i
+        i += 1
 
 
 if __name__ == "__main__":
@@ -88,12 +102,9 @@ if __name__ == "__main__":
     else:
         width = 101
         height = 103
-    ticks = 100
-    result_1 = solve_1(robots, width, height, ticks)
+    result_1 = solve_1(robots, width, height, ticks=100)
     if use_example:
         assert result_1 == 12, result_1
     print(f'Result 1: {result_1}')
     result_2 = solve_2(robots, width, height)
-    if use_example:
-        assert result_2 == None, result_2
     print(f'Result 2: {result_2}')
