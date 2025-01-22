@@ -1,19 +1,20 @@
 from typing import Optional
 
 from CSInstructionSet import CSInstructionSet
+from CSRegbank import CSRegbank
 
 
 class CSComputer():
 
     def __init__(self,
-                 regbank: dict[str, int],
+                 regbank: CSRegbank,
                  instr: Optional[CSInstructionSet] = None,
                  prog: list[int] = [],
                  ) -> None:
         # Debug info
         self.stacktrace = ''
 
-        # A register bank must be provided
+        # Register bank is mandatory
         self.regbank = regbank
 
         # Use the default Instruction set if none provided
@@ -29,7 +30,8 @@ class CSComputer():
     def run(self,
             prog: list[int] = [],
             trace: bool = False) -> list[int]:
-        assert prog is not None or self.prog is not None, 'Program was not provided!'
+        assert prog or self.prog is not None, 'Program was not provided!'
+        assert self.regbank, 'Regbank was not provided!'
         # Run the default program if none is provided
         if prog is None:
             prog = self.prog
@@ -56,8 +58,11 @@ class CSComputer():
             # Execute the instruction
             result = instr(operand)
             if trace:
-                self.stacktrace += f"\t{instr_p:2d}: {instr.__name__}({operand:2d}) => A: {self.regbank['A']:10d}, B: {
-                    self.regbank['B']:10d}, C: {self.regbank['C']:10d}\n"
+                # TODO a nicer string generation
+                self.stacktrace += f"\t{instr_p//2:2d}: {instr.__name__}({operand:2d}) => A: {self.regbank.regbank['A']:<10d}, B: {
+                    self.regbank.regbank['B']:<10d}, C: {self.regbank.regbank['C']:<10d}, D: {self.regbank.regbank['D']:<10d}, E: {self.regbank.regbank['E']:<10d}, F: {self.regbank.regbank['F']:<10d}\n"
+                # print(f"\t{instr_p//2:2d}: {instr.__name__}({operand:2d}) => A: {self.regbank.regbank['A']:<10d}, B: {
+                # self.regbank.regbank['B']:<10d}, C: {self.regbank.regbank['C']:<10d}, D: {self.regbank.regbank['D']:<10d}, E: {self.regbank.regbank['E']:<10d}, F: {self.regbank.regbank['F']:<10d}\n")
             # Use the results
             result_len = len(result)
             # Flow control instructions have longer results

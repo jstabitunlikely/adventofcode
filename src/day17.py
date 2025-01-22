@@ -3,6 +3,7 @@ import sys
 
 import inputfetcher
 from CSComputer import CSComputer
+from CSRegbank import CSRegbank
 
 EXAMPLE = """\
 Register A: 729
@@ -25,7 +26,7 @@ def parse_input(example: bool) -> tuple[list[int], dict[str, int]]:
     data = EXAMPLE if example else inputfetcher.fetch_input('2024', '17')
     # Get the raw strings for registers and program
     data = data.strip()
-    regbank, prog = data.split('\n\n')
+    regs, prog = data.split('\n\n')
     # Extract the program into a list
     prg_re = re.compile(r'Program: ([0-9,]+)', flags=re.DOTALL)
     prog = re.findall(prg_re, prog)
@@ -33,9 +34,9 @@ def parse_input(example: bool) -> tuple[list[int], dict[str, int]]:
     prog = [int(p) for p in prog]
     # Extract the registers into a dict
     reg_re = re.compile(r'Register ([ABC]): ([0-9-]+)', flags=re.DOTALL)
-    regbank = re.findall(reg_re, regbank)
-    regbank = dict((k, int(v)) for k, v in regbank)
-    return prog, regbank
+    regs = re.findall(reg_re, regs)
+    regs = dict((k, int(v)) for k, v in regs)
+    return prog, regs
 
 
 def pseudocode(A: int,
@@ -51,7 +52,8 @@ def loop(A: int,
     # We have a possible initial value of A.
     # Run the program and see if the output matches the program code.
     if not expected_output:
-        cpu = CSComputer(regbank={'A': A, 'B': 0, 'C': 0})
+        regbank = CSRegbank(regbank={'A': A, 'B': 0, 'C': 0})
+        cpu = CSComputer(regbank)
         return [A] if cpu.run(prog) == prog else []
 
     out = expected_output.pop()
@@ -72,7 +74,8 @@ def loop(A: int,
 
 
 def solve_1(prog: list[int],
-            regbank: dict[str, int]) -> str:
+            regs: dict[str, int]) -> str:
+    regbank = CSRegbank(regs)
     cpu = CSComputer(regbank)
     output = cpu.run(prog, trace=False)
     return ','.join([str(o) for o in output])
@@ -84,8 +87,8 @@ def solve_2(prog: list[int]) -> list[int]:
 
 if __name__ == "__main__":
     use_example = "--example" in sys.argv
-    prog, regbank = parse_input(use_example)
-    result_1 = solve_1(prog, regbank)
+    prog, regs = parse_input(use_example)
+    result_1 = solve_1(prog, regs)
     if use_example:
         assert result_1 == '4,6,3,5,6,3,5,2,1,0', result_1
     print(f'Result 1: {result_1}')

@@ -1,37 +1,32 @@
+from CSRegbank import CSRegbank
+
+
 class CSInstructionSet():
 
     def __init__(self,
-                 regbank: dict[str, int],
-                 modulo: int = 8) -> None:
-        self.MODULO = modulo
+                 regbank: CSRegbank,
+                 modulo: int = 3) -> None:
+        self.MODMASK = (1 << modulo) - 1  # Create a bitmask with N set bits
         self.regbank = regbank
 
         self.decoder = [
-            self.adv,
-            self.bxl,
-            self.bst,
-            self.jnz,
-            self.bxc,
-            self.out,
-            self.bdv,
-            self.cdv,
+            self.adv,   # OPCODE 0
+            self.bxl,   # OPCODE 1
+            self.bst,   # OPCODE 2
+            self.jnz,   # OPCODE 3
+            self.bxc,   # OPCODE 4
+            self.out,   # OPCODE 5
+            self.bdv,   # OPCODE 6
+            self.cdv,   # OPCODE 7
         ]
 
     # Combo operand
 
     # REVISIT: a better way without getting all register values in each call
     def combo(self, op: int) -> int:
-        combo = [
-            0, 1, 2, 3,
-            self.regbank['A'],
-            self.regbank['B'],
-            self.regbank['C'],
-            # RESERVED
-        ]
-        try:
-            return combo[op]
-        except IndexError:
-            return -1
+        combo = [0, 1, 2, 3]
+        combo.extend([reg for _, reg in sorted(self.regbank.regbank.items())])
+        return combo[op]
 
     # Instructions
 
@@ -41,21 +36,21 @@ class CSInstructionSet():
         divide A by 4 (2^2); an operand of 5 would divide A by 2^B.) The result of the division operation is truncated
         to an integer and then written to the A register.
         """
-        self.regbank['A'] //= 2**self.combo(op)
+        self.regbank.regbank['A'] >>= self.combo(op)
         return []
 
     def bxl(self, op: int) -> list:
         """The bxl instruction (opcode 1) calculates the bitwise XOR of register B and the instruction's literal
         operand, then stores the result in register B.
         """
-        self.regbank['B'] ^= op
+        self.regbank.regbank['B'] ^= op
         return []
 
     def bst(self, op: int) -> list:
         """The bst instruction (opcode 2) calculates the value of its combo operand modulo 8 (thereby keeping only its
         lowest 3 bits), then writes that value to the B register.
         """
-        self.regbank['B'] = self.combo(op) % self.MODULO
+        self.regbank.regbank['B'] = self.combo(op) & self.MODMASK
         return []
 
     def jnz(self, op: int) -> list:
@@ -63,7 +58,7 @@ class CSInstructionSet():
         it jumps by setting the instruction pointer to the value of its literal operand; if this instruction jumps, the
         instruction pointer is not increased by 2 after this instruction.
         """
-        if self.regbank['A']:
+        if self.regbank.regbank['A']:
             return [0, op]
         return []
 
@@ -71,25 +66,25 @@ class CSInstructionSet():
         """The bxc instruction (opcode 4) calculates the bitwise XOR of register B and register C, then stores the
         result in register B. (For legacy reasons, this instruction reads an operand but ignores it.)
         """
-        self.regbank['B'] ^= self.regbank['C']
+        self.regbank.regbank['B'] ^= self.regbank.regbank['C']
         return []
 
     def out(self, op: int) -> list:
         """The out instruction (opcode 5) calculates the value of its combo operand modulo 8, then outputs that value.
         (If a program outputs multiple values, they are separated by commas.)
         """
-        return [self.combo(op) % self.MODULO]
+        return [self.combo(op) & self.MODMASK]
 
     def bdv(self, op: int) -> list:
         """The bdv instruction (opcode 6) works exactly like the adv instruction except that the result is stored in the
         B register. (The numerator is still read from the A register.)
         """
-        self.regbank['B'] = self.regbank['A'] // 2**self.combo(op)
+        self.regbank.regbank['B'] = self.regbank.regbank['A'] >> self.combo(op)
         return []
 
     def cdv(self, op: int) -> list:
         """The cdv instruction (opcode 7) works exactly like the adv instruction except that the result is stored in the
         C register. (The numerator is still read from the A register.)
         """
-        self.regbank['C'] = self.regbank['A'] // 2**self.combo(op)
+        self.regbank.regbank['C'] = self.regbank.regbank['A'] >> self.combo(op)
         return []
