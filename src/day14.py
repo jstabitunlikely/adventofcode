@@ -73,24 +73,25 @@ def solve_1(robots: list[tuple[Coordinate, Coordinate]],
 def solve_2(robots: list[tuple[Coordinate, Coordinate]],
             width: int,
             height: int) -> int:
-    robots_adv, velocity = zip(*robots)
-    window = 50
-    threshold = 0.50 * len(robots)
-    i = 1
+    position, velocity = zip(*robots)
+    robots_p = list(position)
+    robots_v = list(velocity)
+    WINDOW = 50
+    THRESHOLD = 0.50 * len(robots)
+    tick = 1
     while True:
-        # REVISIT type hint issue coming from unzip
-        robots_adv = [
+        robots_p = [
             Coordinate(
-                (p.x + velocity[j].x) % width,
-                (p.y + velocity[j].y) % height
-            ) for j, p in enumerate(robots_adv)
+                (p.x + robots_v[j].x) % width,
+                (p.y + robots_v[j].y) % height
+            ) for j, p in enumerate(robots_p)
         ]
-        for x in range(height-window):
-            w = [r for r in robots_adv if x <= r.x <= x+window and x <= r.y <= x+window]
-            if len(w) > threshold:
+        for x in range(height-WINDOW):
+            q = [r for r in robots_p if x <= r.x <= x+WINDOW and x <= r.y <= x+WINDOW]
+            if len(q) > THRESHOLD:
                 # draw(robots_adv, width, height)
-                return i
-        i += 1
+                return tick
+        tick += 1
 
 
 if __name__ == "__main__":
@@ -106,5 +107,8 @@ if __name__ == "__main__":
     if use_example:
         assert result_1 == 12, result_1
     print(f'Result 1: {result_1}')
-    result_2 = solve_2(robots, width, height)
+    if use_example:
+        result_2 = -1
+    else:
+        result_2 = solve_2(robots, width, height)
     print(f'Result 2: {result_2}')
