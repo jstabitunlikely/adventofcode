@@ -56,6 +56,18 @@ class Map:
                        coordinate: Coordinate) -> bool:
         return 0 <= coordinate.x <= self.x_max and 0 <= coordinate.y <= self.y_max
 
+    def get_all_elements_by_condition(self,
+                                      condition: Callable) -> Any:
+        return [e for _, e in self.enumerate_map() if condition(e)]
+
+    def get_first_element_by_condition(self,
+                                       condition: Callable) -> Any:
+        return self.get_all_elements_by_condition(condition=condition)[0]
+
+    def find_all_elements_by_condition(self,
+                                       condition: Callable) -> Any:
+        return [c for c, e in self.enumerate_map() if condition(e)]
+
     def find_all_element(self,
                          element: Any) -> list[Coordinate]:
         return [p for p, e in self.enumerate_map() if e == element]
