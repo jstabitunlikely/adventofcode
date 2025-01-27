@@ -41,9 +41,8 @@ class Box(Coordinate):
         self.warehouse = warehouse
         self.is_left_half = is_left_half
 
-    # These flags prevent left and right halves infinitely nudging/pushing each other.
+    # This flag prevents left and right halves infinitely nudging each other.
     is_nudge_in_progress = False
-    is_push_in_progress = False
 
     def move(self, direction: str) -> bool:
         nx = self.x + self.COMPASS[direction][0]
@@ -60,14 +59,11 @@ class Box(Coordinate):
         if direction in '<>':
             return self.move(direction)
         # Vertical push needs to handle both halves
-        else:
-            self.is_push_in_progress = True
-            if p := self.nudge(direction):
-                if self.other_half is not None and not self.other_half.is_push_in_progress:
-                    self.other_half.push(direction)
-                self.move(direction)
-            self.is_push_in_progress = False
-            return p
+        elif p := self.nudge(direction):
+            if self.other_half is not None:
+                self.other_half.move(direction)
+            self.move(direction)
+        return p
 
     def nudge(self, direction: str) -> bool:
         self.is_nudge_in_progress = True
