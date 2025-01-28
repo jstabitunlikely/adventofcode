@@ -1,2 +1,2 @@
-# aoc24
-Advent of Code 2024
+# Advent of Code
+My solutions to the Advent of Code problems.
