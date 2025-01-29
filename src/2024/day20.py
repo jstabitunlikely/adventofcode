@@ -1,6 +1,6 @@
 import sys
 
-import inputfetcher
+import InputFetcher
 from Map import Map
 from Coordinate import Coordinate
 
@@ -24,7 +24,7 @@ EXAMPLE = """\
 
 
 def parse_input(example: bool) -> Map:
-    data = EXAMPLE if example else inputfetcher.fetch_input('2024', '20')
+    data = EXAMPLE if example else InputFetcher.fetch_input('2024', '20')
     return Map(data, str)
 
 

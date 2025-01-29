@@ -1,7 +1,7 @@
 import re
 import sys
 
-import inputfetcher
+import InputFetcher
 from CSComputer import CSComputer
 from CSRegbank import CSRegbank
 
@@ -23,7 +23,7 @@ Program: 0,3,5,4,3,0\
 
 
 def parse_input(example: bool) -> tuple[list[int], dict[str, int]]:
-    data = EXAMPLE if example else inputfetcher.fetch_input('2024', '17')
+    data = EXAMPLE if example else InputFetcher.fetch_input('2024', '17')
     # Get the raw strings for registers and program
     data = data.strip()
     regs, prog = data.split('\n\n')

@@ -1,7 +1,7 @@
 import sys
 import networkx as nx
 
-import inputfetcher
+import InputFetcher
 
 EXAMPLE = """\
 kh-tc
@@ -40,7 +40,7 @@ td-yn\
 
 
 def parse_input(example: bool) -> list[tuple[str, str]]:
-    data = EXAMPLE if example else inputfetcher.fetch_input('2024', '23')
+    data = EXAMPLE if example else InputFetcher.fetch_input('2024', '23')
     pairs = []
     for pair in data.split('\n'):
         a, b = pair.split('-')

@@ -1,14 +1,14 @@
 import sys
 import math
 
-import inputfetcher
+import InputFetcher
 
 
 EXAMPLE = """125 17"""
 
 
 def parse_input(example: bool) -> list[int]:
-    data = EXAMPLE if example else inputfetcher.fetch_input('2024', '11')
+    data = EXAMPLE if example else InputFetcher.fetch_input('2024', '11')
     return [int(n) for n in data.split()]
 
 

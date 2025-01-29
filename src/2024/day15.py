@@ -3,7 +3,7 @@ from typing import Union
 
 import sys
 
-import inputfetcher
+import InputFetcher
 from Warehouse import *
 from Map import Map
 
@@ -45,7 +45,7 @@ def is_left_box(object_: object) -> bool:
 
 
 def parse_input(example: bool) -> tuple[Map, str]:
-    data = EXAMPLE if example else inputfetcher.fetch_input('2024', '15')
+    data = EXAMPLE if example else InputFetcher.fetch_input('2024', '15')
     data = data.strip()
     wh_str, dirseq = data.split('\n\n')
     dirseq = dirseq.replace('\n', '')

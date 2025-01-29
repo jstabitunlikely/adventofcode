@@ -1,5 +1,4 @@
 import math
-from Coordinate import Coordinate
 
 
 def sign(num: int) -> int:

@@ -3,7 +3,7 @@ import numpy as np
 import numpy.typing as npt
 from itertools import product
 
-import inputfetcher
+import InputFetcher
 from Map import Map
 
 EXAMPLE = """\
@@ -50,7 +50,7 @@ EXAMPLE = """\
 
 
 def parse_input(example: bool) -> dict[str, list[npt.NDArray]]:
-    data = EXAMPLE if example else inputfetcher.fetch_input('2024', '25')
+    data = EXAMPLE if example else InputFetcher.fetch_input('2024', '25')
     schematics = data.split('\n\n')
     schematics_digital: dict[str, list[npt.NDArray]] = {
         'locks': [],
