@@ -2,7 +2,7 @@ import sys
 import networkx as nx
 from functools import cache
 
-import inputfetcher
+import InputFetcher
 
 EXAMPLE = """\
 029A
@@ -41,7 +41,7 @@ LAYERS_2 = ['me'] + ['dirpad'] * 25 + ['numpad']
 
 
 def parse_input(example: bool) -> list[str]:
-    data = EXAMPLE if example else inputfetcher.fetch_input('2024', '21')
+    data = EXAMPLE if example else InputFetcher.fetch_input('2024', '21')
     return data.split('\n')
 
 

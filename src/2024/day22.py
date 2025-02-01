@@ -1,6 +1,6 @@
 import sys
 
-import inputfetcher
+import InputFetcher
 from CSComputer import CSComputer
 from CSInstructionSetExt import CSInstructionSetExt
 from CSCompiler import CSCompiler
@@ -42,7 +42,7 @@ out(5) // output regB\
 def parse_input(use_example: int) -> list[int]:
     match use_example:
         case 0:
-            data = inputfetcher.fetch_input('2024', '22')
+            data = InputFetcher.fetch_input('2024', '22')
         case 1:
             data = EXAMPLE_1
         case 2:

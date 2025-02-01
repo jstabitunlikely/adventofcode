@@ -3,7 +3,7 @@ import sys
 from functools import reduce
 from operator import mul
 
-import inputfetcher
+import InputFetcher
 from Coordinate import Coordinate
 from Map import Map
 
@@ -24,7 +24,7 @@ p=9,5 v=-3,-3\
 
 
 def parse_input(example: bool) -> list[tuple[Coordinate, Coordinate]]:
-    data = EXAMPLE if example else inputfetcher.fetch_input('2024', '14')
+    data = EXAMPLE if example else InputFetcher.fetch_input('2024', '14')
     data = data.strip()
     data = data.split('\n')
     numbers_re = re.compile(r'[0-9-]+', flags=re.DOTALL)

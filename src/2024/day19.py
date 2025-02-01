@@ -1,6 +1,6 @@
 import sys
 
-import inputfetcher
+import InputFetcher
 import RadixTrie
 
 EXAMPLE = """\
@@ -18,7 +18,7 @@ bbrgwb\
 
 
 def parse_input(example: bool) -> tuple[list[str], list[str]]:
-    data = EXAMPLE if example else inputfetcher.fetch_input('2024', '19')
+    data = EXAMPLE if example else InputFetcher.fetch_input('2024', '19')
     data = data.strip()
     words, designs = data.split('\n\n')
     words = words.split(',')

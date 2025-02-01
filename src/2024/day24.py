@@ -1,6 +1,6 @@
 import sys
 
-import inputfetcher
+import InputFetcher
 from Circuit import Circuit
 
 EXAMPLE_1 = """\
@@ -92,7 +92,7 @@ x05 AND y05 -> z00\
 def parse_input(use_example: int) -> dict[str, dict]:
     match use_example:
         case 0:
-            data = inputfetcher.fetch_input('2024', '24')
+            data = InputFetcher.fetch_input('2024', '24')
         case 1:
             data = EXAMPLE_1
         case 2:

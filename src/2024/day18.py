@@ -1,7 +1,7 @@
 import sys
 import networkx as nx
 
-import inputfetcher
+import InputFetcher
 from Coordinate import Coordinate
 
 EXAMPLE = """\
@@ -34,7 +34,7 @@ EXAMPLE = """\
 
 
 def parse_input(example: bool) -> list[Coordinate]:
-    data = EXAMPLE if example else inputfetcher.fetch_input('2024', '18')
+    data = EXAMPLE if example else InputFetcher.fetch_input('2024', '18')
     data = data.strip()
     y_x = [c.split(',') for c in data.split('\n')]
     x_y = [Coordinate(int(x), int(y)) for y, x in y_x]

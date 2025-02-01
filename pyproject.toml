@@ -1,3 +1,12 @@
-[[tool.mypy.overrides]]
+[project]
+requires-python = ">= 3.13"
+
+[tool.mypy.overrides]
 module = ["networkx.*", "scipy.*", "requests.*", "sh.*"]
 ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+pythonpath = ["src/utils", "src/2024"]
+
+[tool.coverage.run]
+omit = ["test/*"]

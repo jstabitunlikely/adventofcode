@@ -4,7 +4,7 @@ import sys
 import numpy as np
 from scipy import linalg
 
-import inputfetcher
+import InputFetcher
 from utils import is_int
 
 EXAMPLE = """\
@@ -32,7 +32,7 @@ REL_TOL = 1e-14
 
 
 def parse_input(example):
-    data = EXAMPLE if example else inputfetcher.fetch_input('2024', '13')
+    data = EXAMPLE if example else InputFetcher.fetch_input('2024', '13')
     data = data.split('\n\n')
     numbers_re = re.compile(r'\d+', flags=re.DOTALL)
     machines = []

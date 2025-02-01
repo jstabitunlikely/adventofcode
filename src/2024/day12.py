@@ -1,7 +1,7 @@
 import sys
 import networkx as nx
 
-import inputfetcher
+import InputFetcher
 from Map import Map
 from Coordinate import Coordinate
 
@@ -20,7 +20,7 @@ MMMISSJEEE\
 
 
 def parse_input(example: bool) -> Map:
-    data = EXAMPLE if example else inputfetcher.fetch_input('2024', '12')
+    data = EXAMPLE if example else InputFetcher.fetch_input('2024', '12')
     return Map(data, str)
 
 
