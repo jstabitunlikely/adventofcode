@@ -63,9 +63,9 @@ class Coordinate():
         return diff.x + diff.y
 
     def get_neighbor(self, dir_: Union[str, int]) -> Coordinate:
-        if type(dir_) == str:
+        if type(dir_) == str:  # noqa: E721
             d = dir_
-        elif type(dir_) == int:
+        elif type(dir_) == int:  # noqa: E721
             d = self.DIRECTIONS[dir_]
         nx = self.x + self.COMPASS[d][0]
         ny = self.y + self.COMPASS[d][1]

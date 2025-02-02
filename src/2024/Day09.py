@@ -103,7 +103,7 @@ class Day09(Day):
 
         # Debug info
         # Note: spaces are denoted by -1, changing them to '.'
-        msg = "".join([str(d) if d > -1 else '.' for d in compact_disk])
+        msg = "".join([str(d) if d > -1 else '.' for d in compact_disk])  # noqa: F841
         # print(f"Disk: {msg}")
 
         # Checksum calculation

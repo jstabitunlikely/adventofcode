@@ -58,7 +58,7 @@ def parse_input(example: bool) -> dict[str, list[npt.NDArray]]:
     }
     for sch in schematics:
         sch_str = Map(sch, str)
-        sch_int = [list(map(lambda x: 1 if x == '#' else 0, l)) for l in sch_str.map_]
+        sch_int = [list(map(lambda x: 1 if x == '#' else 0, line)) for line in sch_str.map_]
         sch_arr = np.array(sch_int)
         if all(sch_arr[0]):
             k = 'keys'

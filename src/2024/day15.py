@@ -4,7 +4,7 @@ from typing import Union
 import sys
 
 import InputFetcher
-from Warehouse import *
+from Warehouse import (Robot, Box, Wall, Space)
 from Map import Map
 
 EXAMPLE = """\
@@ -33,15 +33,15 @@ v^^>>><<^^<>>^v^<v^vv<>v^<<>^<^v^v><^<<<><<^<v><v<>vv>>v><v^<vv<>v^<<^\
 
 
 def is_robot(object_: object) -> bool:
-    return type(object_) == Robot
+    return type(object_) == Robot  # noqa: E721
 
 
 def is_box(object_: object) -> bool:
-    return type(object_) == Box
+    return type(object_) == Box  # noqa: E721
 
 
 def is_left_box(object_: object) -> bool:
-    return type(object_) == Box and object_.is_left_half
+    return type(object_) == Box and object_.is_left_half  # noqa: E721
 
 
 def parse_input(example: bool) -> tuple[Map, str]:
