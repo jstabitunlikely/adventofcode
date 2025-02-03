@@ -52,7 +52,7 @@ class InputFetcher:
         return response.text
 
 
-@DeprecationWarning
+# @DeprecationWarning
 def fetch_input(year: str,
                 day: str,
                 cache_dir: str = 'cache') -> str:

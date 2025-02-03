@@ -58,11 +58,10 @@ class CSComputer():
             # Execute the instruction
             result = instr(operand)
             if trace:
-                # TODO a nicer string generation
-                self.stacktrace += f"\t{instr_p//2:2d}: {instr.__name__}({operand:2d}) => A: {self.regbank.regbank['A']:<10d}, B: {
-                    self.regbank.regbank['B']:<10d}, C: {self.regbank.regbank['C']:<10d}, D: {self.regbank.regbank['D']:<10d}, E: {self.regbank.regbank['E']:<10d}, F: {self.regbank.regbank['F']:<10d}\n"
-                # print(f"\t{instr_p//2:2d}: {instr.__name__}({operand:2d}) => A: {self.regbank.regbank['A']:<10d}, B: {
-                # self.regbank.regbank['B']:<10d}, C: {self.regbank.regbank['C']:<10d}, D: {self.regbank.regbank['D']:<10d}, E: {self.regbank.regbank['E']:<10d}, F: {self.regbank.regbank['F']:<10d}\n")
+                self.stacktrace += f'\t{instr_p//2:2d}: {instr.__name__}({operand:2d}) => '
+                for reg, value in self.regbank.regbank.items():
+                    self.stacktrace += f'{reg}: {value:<12d} '
+                self.stacktrace += '\n'
             # Use the results
             result_len = len(result)
             # Flow control instructions have longer results

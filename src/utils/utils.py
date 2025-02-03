@@ -14,5 +14,5 @@ def is_int(number,
     return math.isclose(number, round(number), rel_tol=rel_tol)
 
 
-def transpose(l):
-    return list(map(list, zip(*l)))
+def transpose(matrix):
+    return list(map(list, zip(*matrix)))

@@ -5,7 +5,6 @@ from operator import mul
 
 import InputFetcher
 from Coordinate import Coordinate
-from Map import Map
 
 EXAMPLE = """\
 p=0,4 v=3,-3

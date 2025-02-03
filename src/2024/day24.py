@@ -109,8 +109,8 @@ def parse_input(use_example: int) -> dict[str, dict]:
         k = k.strip()
         logic['inputs'][k] = v
     gates = gates.strip()
-    for l in gates.split('\n'):
-        v, k = l.split('->')
+    for line in gates.split('\n'):
+        v, k = line.split('->')
         v = v.strip()
         k = k.strip()
         logic['gates'][k] = v
@@ -125,7 +125,7 @@ def eval_logic(logic: dict[str, dict]) -> dict[str, str]:
         for key, value in logic.items():
             try:
                 local_vars[key] = eval(str(value), globals=local_vars)
-            except:
+            except NameError:
                 continue
     return local_vars
 

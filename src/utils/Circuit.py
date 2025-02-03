@@ -1,5 +1,5 @@
+from typing import Any
 import networkx as nx
-from typing import Optional, Any
 
 
 class Circuit:

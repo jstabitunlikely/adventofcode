@@ -84,7 +84,7 @@ class Adders:
             dag.add_node(f"Y_{i}", layer=0)
 
         # Add half adder node at the bottom
-        dag.add_node(f"HA_0", layer=1)
+        dag.add_node("HA_0", layer=1)
 
         # Add full adder nodes for the rest of the bits
         for i in range(1, num_bits):
@@ -98,8 +98,8 @@ class Adders:
         dag.add_node(Cout, layer=2)
 
         # Connect input nodes to half adder
-        dag.add_edge(f"X_0", f"HA_0")
-        dag.add_edge(f"Y_0", f"HA_0")
+        dag.add_edge("X_0", "HA_0")
+        dag.add_edge("Y_0", "HA_0")
 
         # Connect input nodes to full adders
         for i in range(1, num_bits):
@@ -107,8 +107,8 @@ class Adders:
             dag.add_edge(f"Y_{i}", f"FA_{i}")
 
         # Connect half adders to sum and carry-out nodes
-        dag.add_edge(f"HA_0", f"S_0")
-        dag.add_edge(f"HA_0", f"FA_1")
+        dag.add_edge("HA_0", "S_0")
+        dag.add_edge("HA_0", "FA_1")
 
         # Connect full adders to sum and carry-out nodes
         for i in range(1, num_bits):
