@@ -1,7 +1,7 @@
 [project]
 requires-python = ">= 3.13"
 
-[tool.mypy.overrides]
+[[tool.mypy.overrides]]
 module = ["networkx.*", "scipy.*", "requests.*", "sh.*"]
 ignore_missing_imports = true
 
