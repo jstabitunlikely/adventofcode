@@ -40,9 +40,8 @@ class Box(Coordinate):
         super().__init__(x, y)
         self.warehouse = warehouse
         self.is_left_half = is_left_half
-
-    # This flag prevents left and right halves infinitely nudging each other.
-    is_nudge_in_progress = False
+        # This flag prevents left and right halves infinitely nudging each other.
+        self.is_nudge_in_progress = False
 
     def move(self, direction: str) -> bool:
         nx = self.x + self.COMPASS[direction][0]
