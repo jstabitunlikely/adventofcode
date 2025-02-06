@@ -25,11 +25,12 @@ class Day14(Day):
         self.puzzle = robots
 
     def draw(self,
+             robots: list[Coordinate],
              width: int,
              height: int):
         # Note: swapping x-y for proper visualization
         M = [['.'] * width for _ in range(height)]
-        for r in self.puzzle:
+        for r in robots:
             M[r.y][r.x] = '*'
         for row in M:
             print(''.join(row))
@@ -75,7 +76,7 @@ class Day14(Day):
             for x in range(height-WINDOW):
                 q = [r for r in robots_p if x <= r.x <= x+WINDOW and x <= r.y <= x+WINDOW]
                 if len(q) > THRESHOLD:
-                    # draw(robots_adv, width, height)
+                    # self.draw(robots_p, width, height)
                     break
             else:
                 tick += 1
