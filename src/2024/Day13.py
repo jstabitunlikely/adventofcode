@@ -29,10 +29,12 @@ class Day13(Day):
 
     def solve_part_1(self, correction: bool = False):
         if correction:
-            self.puzzle = [[a, [bx+self.CORRECTION, by+self.CORRECTION]] for a, [bx, by] in self.puzzle]
+            puzzle = [[a, [bx+self.CORRECTION, by+self.CORRECTION]] for a, [bx, by] in self.puzzle]
+        else:
+            puzzle = self.puzzle  # type:ignore
         cost = [3, 1]
         tokens = 0
-        for [a, b] in self.puzzle:
+        for [a, b] in puzzle:
             x = linalg.solve(a, b, check_finite=False)
             # No solution at all
             if not len(x):
