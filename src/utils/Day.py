@@ -42,6 +42,6 @@ class Day(ABC):
             assert list(p1.keys()) == ['part_1', 'part_2']
             self.answer = p1
         else:
-            self.answer['part_1'] = self.solve_part_1()
+            self.answer['part_1'] = p1
             self.answer['part_2'] = self.solve_part_2()
         return self.answer
