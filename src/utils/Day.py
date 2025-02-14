@@ -28,11 +28,11 @@ class Day(ABC):
             raise ValueError('self.puzzle_input is None!')
 
     @abstractmethod
-    def solve_part_1(self) -> Any:
+    def solve_part_1(self, *args, **kwargs) -> Any:
         pass
 
     @abstractmethod
-    def solve_part_2(self) -> Any:
+    def solve_part_2(self, *args, **kwargs) -> Any:
         pass
 
     def solve(self) -> dict[str, Any]:
