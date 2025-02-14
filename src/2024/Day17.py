@@ -1,4 +1,5 @@
 import re
+from typing import Any
 
 from Day import Day
 from CSComputer import CSComputer
@@ -18,16 +19,16 @@ class Day17(Day):
         regs, prog = self.puzzle_raw.split('\n\n')
         # Extract the program into a list
         prg_re = re.compile(r'Program: ([0-9,]+)', flags=re.DOTALL)
-        prog = re.findall(prg_re, prog)
-        prog = prog[0].split(',')
-        prog = [int(p) for p in prog]
+        prog_matches = re.findall(prg_re, prog)
+        prog_split = prog_matches[0].split(',')
+        prog_int = [int(p) for p in prog_split]
         # Extract the registers into a dict
         reg_re = re.compile(r'Register ([ABC]): ([0-9-]+)', flags=re.DOTALL)
-        regs = re.findall(reg_re, regs)
-        regs = dict((k, int(v)) for k, v in regs)
-        self.puzzle = {
-            'prog': prog,
-            'regs': regs,
+        regs_matches = re.findall(reg_re, regs)
+        regs_dict = dict((k, int(v)) for k, v in regs_matches)
+        self.puzzle: dict[str, Any] = {
+            'prog': prog_int,
+            'regs': regs_dict,
         }
 
     def pseudocode(self,
