@@ -12,12 +12,12 @@ class Day19(Day):
     def parse_puzzle(self) -> None:
         self.puzzle_raw = self.puzzle_raw.strip()
         words, designs = self.puzzle_raw.split('\n\n')
-        words = words.split(',')
-        words = [w.strip() for w in words]
-        designs = designs.split('\n')
+        words_split = words.split(',')
+        words_split = [w.strip() for w in words_split]
+        designs_split = designs.split('\n')
         self.puzzle = {
-            'words': words,
-            'designs': designs,
+            'words': words_split,
+            'designs': designs_split,
         }
 
     def solve_part_1(self):
