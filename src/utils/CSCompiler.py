@@ -7,7 +7,7 @@ class CSCompiler():
 
     def __init__(self,
                  instruction_et: CSInstructionSet) -> None:
-        self.instruction_re = re.compile(r'([a-z]{3})\(([0-9]+)\)')
+        self.instruction_re = re.compile(r'\s*([a-z]{3})\(([0-9]+)\)')
         self.iset = instruction_et
         self.opcodes = {}
         for icode, iname in enumerate(self.iset.decoder):
