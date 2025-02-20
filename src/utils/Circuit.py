@@ -93,7 +93,7 @@ class Circuit:
         width = 0
         while f'{prefix}{width:02d}' in self.graph:
             width += 1
-        return width-1
+        return width
 
     def evaluate_vector(self,
                         prefix: str) -> int:
