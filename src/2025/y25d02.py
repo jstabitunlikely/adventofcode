@@ -11,13 +11,19 @@ class y25d02(Day):
     def parse_puzzle(self) -> None:
         super().parse_puzzle()
         ranges = []
-        for range_ in self.puzzle_raw.split(','):
-            min, max = range_.split('-')
+        for r in self.puzzle_raw.split(','):
+            min, max = r.split('-')
             ranges.append((int(min), int(max)))
         self.puzzle = ranges
 
     def solve_part_1(self) -> int:
         answer = 0
+        for r in self.puzzle:
+            for i in range(r[0], r[1]+1):
+                idx = len(str(i)) // 2
+                i_str = str(i)
+                if (i_str[:idx] == i_str[idx:]):
+                    answer += i
         return answer
 
     def solve_part_2(self) -> int:
