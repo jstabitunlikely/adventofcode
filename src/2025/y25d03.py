@@ -11,26 +11,27 @@ class y25d03(Day):
 
     def parse_puzzle(self) -> None:
         super().parse_puzzle()
-        banks: list[list[int]] = []
+        banks: list[list[str]] = []
         for bank in self.puzzle_raw.strip().split('\n'):
-            batteries = [int(b) for b in list(bank)]
-            banks.append(batteries)
+            banks.append(list(bank))
         self.puzzle = banks
 
-    def solve_part_1(self) -> int:
+    def get_joltage(self, number_of_batteries=2) -> int:
         joltage = 0
-        for i, bank in enumerate(self.puzzle):
-            max_index = max(range(len(bank)), key=bank.__getitem__)
-            if max_index == len(bank) - 1:
-                jolts = 10 * + max(bank[:max_index]) + bank[max_index]
-            else:
-                jolts = 10 * bank[max_index] + max(bank[max_index+1:])
-            joltage += jolts
+        for bank in self.puzzle:
+            first_battery_idx = 0
+            for m in range(number_of_batteries, 0, -1):
+                last_battery_idx = len(bank)-m+1
+                strongest_battery = max(enumerate(bank[first_battery_idx:last_battery_idx]), key=lambda item: item[1])
+                first_battery_idx += strongest_battery[0] + 1
+                joltage += 10 ** (m-1) * int(strongest_battery[1])
         return joltage
 
+    def solve_part_1(self) -> int:
+        return self.get_joltage(2)
+
     def solve_part_2(self) -> int:
-        answer = 0
-        return answer
+        return self.get_joltage(12)
 
 
 def main() -> dict[str, str]:  # pragma: no cover
