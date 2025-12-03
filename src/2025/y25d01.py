@@ -45,6 +45,7 @@ class y25d01(Day):
                 current_position = ((self.DIAL_SIZE-current_position) % self.DIAL_SIZE)
         return zero_crossings
 
+
 def main() -> dict[str, str]:  # pragma: no cover
     today = y25d01()
     today.solve()
