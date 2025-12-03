@@ -31,17 +31,15 @@ class y25d01(Day):
         zero_crossings = 0
         current_position = self.STARTING_POSITION
         for t in self.puzzle:
-            if t >= 0:
-                current_position += t
-                zero_crossings += (current_position // self.DIAL_SIZE)
-                current_position %= self.DIAL_SIZE
-            else:
-                # Solve this in the Upside down
+            # Solve this case in the Upside down
+            if t < 0:
                 current_position = ((self.DIAL_SIZE-current_position) % self.DIAL_SIZE)
-                current_position -= t
-                zero_crossings += (current_position // self.DIAL_SIZE)
-                current_position %= self.DIAL_SIZE
-                # We have to go back
+                t = -t
+            current_position += t
+            zero_crossings += (current_position // self.DIAL_SIZE)
+            current_position %= self.DIAL_SIZE
+            # Go back to Hawkins
+            if t < 0:
                 current_position = ((self.DIAL_SIZE-current_position) % self.DIAL_SIZE)
         return zero_crossings
 
