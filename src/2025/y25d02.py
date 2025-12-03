@@ -19,25 +19,20 @@ class y25d02(Day):
             ranges.append((int(min), int(max)))
         self.puzzle = ranges
 
-    # TODO Merge solution 1-2 on a rainy day
+    def get_num_of_invalid_ids(self, pattern):
+        num_of_ids = 0
+        for r in self.puzzle:
+            for i in range(r[0], r[1]+1):
+                i_str = str(i)
+                if pattern.search(i_str):
+                    num_of_ids += i
+        return num_of_ids
 
     def solve_part_1(self) -> int:
-        answer = 0
-        for r in self.puzzle:
-            for i in range(r[0], r[1]+1):
-                i_str = str(i)
-                if self.INVALID_ID_RE_1.search(i_str):
-                    answer += i
-        return answer
+        return self.get_num_of_invalid_ids(self.INVALID_ID_RE_1)
 
     def solve_part_2(self) -> int:
-        answer = 0
-        for r in self.puzzle:
-            for i in range(r[0], r[1]+1):
-                i_str = str(i)
-                if self.INVALID_ID_RE_2.search(i_str):
-                    answer += i
-        return answer
+        return self.get_num_of_invalid_ids(self.INVALID_ID_RE_2)
 
 
 def main() -> dict[str, str]:  # pragma: no cover
