@@ -21,7 +21,18 @@ class y25d04(Day):
         return free_rolls
 
     def solve_part_2(self) -> int:
-        return 0
+        free_rolls = 0
+        # TODO pretty slow, lots of optimizations could be done one day
+        while True:
+            for coordinate in self.puzzle.find_all_element('@'):
+                neighbors = self.puzzle.get_neighbors_around(coordinate, 1, )
+                if (neighbors.count('@') < 4):
+                    self.puzzle.set_element(coordinate, '.')
+                    free_rolls += 1
+                    break
+            else:
+                break
+        return free_rolls
 
 
 def main() -> dict[str, str]:  # pragma: no cover
