@@ -37,14 +37,10 @@ class y25d05(Day):
         fresh_total = 0
         # Remove any range that is a complete sub-range of its predecessor
         nof_ranges = len(self.puzzle['fresh'])
-        to_remove = []
-        for i in range(nof_ranges):
-            if i < nof_ranges-1:
-                if (self.puzzle['fresh'][i+1][1] <= self.puzzle['fresh'][i][1]):
-                    to_remove.append(i+1)
-        to_remove.reverse()
-        for i in to_remove:
-            self.puzzle['fresh'].pop(i)
+        for i in range(nof_ranges-1, -1, -1):
+            if i > 0:
+                if (self.puzzle['fresh'][i][1] <= self.puzzle['fresh'][i-1][1]):
+                    self.puzzle['fresh'].pop(i)
 
         # Strip ranges, so they don't overlap with the next one
         nof_ranges = len(self.puzzle['fresh'])
