@@ -13,23 +13,41 @@ class y25d06(Day):
     def parse_puzzle(self) -> None:
         super().parse_puzzle()
         rows = self.puzzle_raw.split('\n')
-        self.puzzle: dict[str, list[Any]] = {
+        self.puzzle: dict[str, Any] = {
             'inputs': rows[:-1],
-            'operators': rows[-1].split()
+            'operators': rows[-1]
         }
 
     def solve_part_1(self) -> int:
         result = 0
-        inputs = []
-        for row in self.puzzle['inputs']:
-            inputs.append(row.split())
+        inputs = [row.split() for row in self.puzzle['inputs']]
         inputs_t = transpose(inputs)
+        operators = self.puzzle['operators'].split()
         for i, operands in enumerate(inputs_t):
-            result += eval(self.puzzle['operators'][i].join(operands))
+            result += eval(operators[i].join(operands))
         return result
 
     def solve_part_2(self) -> int:
-        return 0
+        operations_t = transpose(
+            [self.puzzle['operators']] +
+            self.puzzle['inputs']
+        )
+        result = 0
+        partial_result = ''
+        current_operation = ''
+        for operation in operations_t:
+            current_operand = ''.join(operation[1:]).strip()
+            if operation[0] != ' ':
+                current_operation = operation[0]
+                partial_result = current_operand
+                continue
+            if current_operand:
+                partial_result += current_operation + current_operand
+            else:
+                result += eval(partial_result)
+                partial_result = ''
+        result += eval(partial_result)
+        return result
 
 
 def main() -> dict[str, str]:  # pragma: no cover
