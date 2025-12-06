@@ -47,7 +47,7 @@ class InputFetcher:
 
         # Write response to cache file
         with open(filename, 'w') as f:
-            f.write(response.text.strip())
+            f.write(response.text.strip('\n\r'))
 
         return response.text
 

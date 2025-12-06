@@ -185,6 +185,50 @@ class Map:
             hood = [p for p in hood if self.has_coordinate(p)]
         return hood
 
+    def get_neighbors_by_range(self,
+                               coordinate: Coordinate,
+                               range_: int,
+                               check_edges: bool = True) -> list[Any]:
+        coordinates_by_range = self.get_neighbor_coordinates_by_range(
+            coordinate=coordinate, range_=range_, check_edges=check_edges)
+        neighbors_by_range = []
+        for c in coordinates_by_range:
+            neighbors_by_range.append(self.get_element(c))
+        return neighbors_by_range
+
+    def get_neighbor_coordinates_around(self,
+                                        coordinate: Coordinate,
+                                        range_: int,
+                                        check_edges: bool = True,
+                                        include_me: bool = False) -> list[Coordinate]:
+        hood = []
+        for x in range(0, range_+1):
+            for y in range(0, (range_)+1):
+                if x == 0 and y == 0 and not include_me:
+                    continue
+                hood.append(coordinate + Coordinate(+x, +y))
+                if x:
+                    hood.append(coordinate + Coordinate(-x, +y))
+                if y:
+                    hood.append(coordinate + Coordinate(+x, -y))
+                if x and y:
+                    hood.append(coordinate + Coordinate(-x, -y))
+        if check_edges:
+            hood = [p for p in hood if self.has_coordinate(p)]
+        return hood
+
+    def get_neighbors_around(self,
+                             coordinate: Coordinate,
+                             range_: int,
+                             check_edges: bool = True,
+                             include_me: bool = False) -> list[Any]:
+        coordinates_around = self.get_neighbor_coordinates_around(
+            coordinate=coordinate, range_=range_, check_edges=check_edges, include_me=include_me)
+        neighbors_around = []
+        for c in coordinates_around:
+            neighbors_around.append(self.get_element(c))
+        return neighbors_around
+
     def get_distance(self,
                      p1: Coordinate,
                      p2: Coordinate) -> int:
