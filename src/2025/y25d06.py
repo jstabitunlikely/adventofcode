@@ -13,17 +13,17 @@ class y25d06(Day):
     def parse_puzzle(self) -> None:
         super().parse_puzzle()
         rows = self.puzzle_raw.split('\n')
-        inputs = []
-        for row in rows[:-1]:
-            inputs.append(row.split())
         self.puzzle: dict[str, list[Any]] = {
-            'inputs': inputs,
+            'inputs': rows[:-1],
             'operators': rows[-1].split()
         }
 
     def solve_part_1(self) -> int:
         result = 0
-        inputs_t = transpose(self.puzzle['inputs'])
+        inputs = []
+        for row in self.puzzle['inputs']:
+            inputs.append(row.split())
+        inputs_t = transpose(inputs)
         for i, operands in enumerate(inputs_t):
             result += eval(self.puzzle['operators'][i].join(operands))
         return result
