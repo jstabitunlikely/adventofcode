@@ -13,24 +13,50 @@ class y25d07(Day):
         super().parse_puzzle()
         self.puzzle = Map(self.puzzle_raw, str)
 
-    def solve_part_1(self) -> int:
+    def solve_part_1(self) -> dict[str, int]:
+        ABOVE = self.puzzle.COMPASS['^']
+        LEFT = self.puzzle.COMPASS['<']
+        RIGHT = self.puzzle.COMPASS['>']
+
+        start = self.puzzle.find_first_element('S')
+        self.puzzle.set_element(start, 1)
+
+        for c in self.puzzle.find_all_element('.'):
+            self.puzzle.set_element(c, 0)
+
         beam_split_count = 0
         for c, e in self.puzzle.enumerate_map():
-            neighbors = self.puzzle.get_neighbors_by_direction(c, '^')
-            if not neighbors['^']:
+            if c.x == 0:
                 continue
-            if neighbors['^'][0][1] in ['S', '|']:
-                if e == '.':
-                    self.puzzle.set_element(c, '|')
-                elif e == '^':
-                    beam_split_count += 1
-                    for d in '<>':
-                        if self.puzzle.get_element(c + self.puzzle.COMPASS[d]) != '^':
-                            self.puzzle.set_element(c + self.puzzle.COMPASS[d], '|')
-        return beam_split_count
+            current_timelines = 0
 
-    def solve_part_2(self) -> int:
-        return 0
+            above = self.puzzle.get_element(c + ABOVE, False)
+            if isinstance(above, int):
+                if e == '^' and above > 0:
+                    beam_split_count += 1
+                    continue
+                else:
+                    current_timelines += above
+
+            left = self.puzzle.get_element(c + LEFT, False)
+            if left is not None and left == '^':
+                if isinstance(self.puzzle.get_element(c + LEFT + ABOVE), int):
+                    current_timelines += self.puzzle.get_element(c + LEFT + ABOVE)
+
+            right = self.puzzle.get_element(c + RIGHT, False)
+            if right is not None and right == '^':
+                if isinstance(self.puzzle.get_element(c + RIGHT + ABOVE), int):
+                    current_timelines += self.puzzle.get_element(c + RIGHT + ABOVE)
+
+            self.puzzle.set_element(c, current_timelines)
+
+        timelines = sum([o for o in self.puzzle.map_[-1] if isinstance(o, int)])
+        return {
+            'part_1': beam_split_count,
+            'part_2': timelines,
+        }
+
+    solve_part_2 = solve_part_1
 
 
 def main() -> dict[str, str]:  # pragma: no cover
