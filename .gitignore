@@ -167,3 +167,5 @@ cython_debug/
 
 # Cached files
 cache
+
+*.log
