@@ -17,26 +17,33 @@ class y25d08(Day):
 
     def parse_puzzle(self) -> None:
         super().parse_puzzle()
-        lines = self.puzzle_raw.split()
+        junctions = self.puzzle_raw.split()
         self.puzzle = []
-        for line in lines:
-            coordinates = list(map(int, line.split(',')))
-            self.puzzle.append(Coordinate3(coordinates[0], coordinates[1], coordinates[2]))
+        for junction in junctions:
+            coordinate = list(map(int, junction.split(',')))
+            self.puzzle.append(Coordinate3(coordinate[0], coordinate[1], coordinate[2]))
 
-    def solve_part_1(self) -> int:
+    def solve_part_1(self) -> dict[str, int]:
         junction_pairs = list(combinations(self.puzzle, 2))
         junction_pairs_by_distance = sorted(junction_pairs, key=lambda j: j[0].get_distance_euclidean(j[1]))
-        junktion_pairs_top = junction_pairs_by_distance[:self.NOF_CONNECTIONS]
         circuits = nx.Graph()
-        for jp in junktion_pairs_top:
+        for i, jp in enumerate(junction_pairs_by_distance):
             circuits.add_node(jp[0])
             circuits.add_node(jp[1])
             circuits.add_edge(jp[0], jp[1])
-        circuits_size = sorted([len(cc) for cc in list(nx.connected_components(circuits))], reverse=True)
-        return reduce(lambda x, y: x * y, circuits_size[:self.NOF_CIRCUITS])
+            if i == self.NOF_CONNECTIONS-1:
+                circuits_size = sorted([len(cc) for cc in list(nx.connected_components(circuits))], reverse=True)
+                answer_1 = reduce(lambda x, y: x * y, circuits_size[:self.NOF_CIRCUITS])
+            if (len(circuits) == len(self.puzzle)) and \
+                    (len(list(nx.connected_components(circuits))) == 1):
+                answer_2 = jp[0].x * jp[1].x
+                break
+        return {
+            'part_1': answer_1,
+            'part_2': answer_2,
+        }
 
-    def solve_part_2(self) -> int:
-        return 0
+    solve_part_2 = solve_part_1
 
 
 def main() -> dict[str, str]:  # pragma: no cover
