@@ -25,6 +25,11 @@ class Map:
             self.DIRECTIONS[3]: Coordinate(0, -1),
         }
 
+    def write_map_to_file(self, file='map.log'):
+        with open(file, 'w', newline='') as file:
+            for row in self.map_:
+                file.write(str(row) + '\n')
+
     def parse(self,
               string: str,
               type_: Callable = int) -> list[list[Any]]:
