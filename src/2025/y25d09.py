@@ -18,17 +18,31 @@ class y25d09(Day):
             coordinate = list(map(int, rt.split(',')))
             self.puzzle.append(Coordinate(coordinate[0], coordinate[1]))
 
-    def solve_part_1(self) -> int:
+    def is_outside(self, c: Coordinate):
+        return False
+
+    def solve_part_1(self) -> dict[str, int]:
         rectangles = list(combinations(self.puzzle, 2))
         area_max = 0
+        area_max_inside_only = 0
         for r in rectangles:
+            # Part 1
             diff = abs(r[0] - r[1])
             area = (diff.x+1) * (diff.y+1)
             area_max = max(area, area_max)
-        return area_max
+            # Part 2
+            if self.is_outside(Coordinate(r[0].x, r[1].y)):
+                continue
+            if self.is_outside(Coordinate(r[1].x, r[0].y)):
+                continue
+            area_max_inside_only = max(area, area_max_inside_only)
 
-    def solve_part_2(self) -> int:
-        return 0
+        return {
+            'part_1': area_max,
+            'part_2': area_max_inside_only
+        }
+
+    solve_part_2 = solve_part_1
 
 
 def main() -> dict[str, str]:  # pragma: no cover
