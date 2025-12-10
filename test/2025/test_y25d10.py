@@ -11,7 +11,7 @@ EXAMPLE = """\
 
 EXPECTED = {
     'part_1': 7,
-    'part_2': 0,
+    'part_2': 33,
 }
 
 

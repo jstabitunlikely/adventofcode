@@ -1,3 +1,4 @@
+from typing import Any
 from Day import Day
 import re
 from itertools import combinations
@@ -15,30 +16,46 @@ class y25d10(Day):
     def parse_puzzle(self) -> None:
         super().parse_puzzle()
         machines = self.MACHINE_RE.findall(self.puzzle_raw)
-        self.puzzle = []
+        self.puzzle: list[dict[str, Any]] = []
         for match in machines:
+            # Lights
             lights = int(match[0].translate(self.LIGHTS_TO_BINARY)[::-1], base=2)
-            switches = match[1].split()
-            switch_values = []
-            for switch in switches:
-                digits = switch[1:-1].split(',')
-                value = 0
-                for d in digits:
-                    value += 2**int(d)
-                switch_values.append(value)
+            # Switches
+            switch_list = match[1].split()
+            switches_lights = []  # Part 1 - SUM(2^N) for a XOR operation as light toggle
+            switches_joltages = []  # Part 1 - TBD for a counter increment
+            for switch in switch_list:
+                digit_list = switch[1:-1].split(',')
+                light_toggle_positions = 0
+                joltage_increments = []
+                for digit in digit_list:
+                    light_toggle_positions += 2**int(digit)
+                    joltage_increments.append(int(digit))
+                switches_lights.append(light_toggle_positions)
+                switches_joltages.append(joltage_increments)
+            # Joltages
+            joltages = []
+            for joltage in match[3].strip().split(','):
+                joltages.append(int(joltage))
+
             self.puzzle.append({
                 'lights': lights,
-                'switches': switch_values,
-                'joltage': match[3].strip()
+                'switches_lights': switches_lights,
+                'switches_joltages': sorted(switches_joltages, key=lambda s: len(s)),
+                'joltages': joltages
             })
 
     def solve_part_1(self) -> int:
         presses = 0
         for machine in self.puzzle:
             found = 0
-            for n in range(1, len(machine['switches'])+1):
-                for combo in list(combinations(machine['switches'], n)):
-                    lights = machine['lights']
+            # Try the shortest combinations first
+            # Note: XOR is self-inverse, so we don't actually need to press any button more than once
+            for n in range(1, len(machine['switches_lights'])+1):
+                # Try each combination of N presses
+                for combo in list(combinations(machine['switches_lights'], n)):
+                    lights = machine['lights']  # New combination of presses, reset the lights
+                    # Press one by one
                     for v in combo:
                         lights ^= v
                         if not lights:
@@ -50,8 +67,6 @@ class y25d10(Day):
                     break
             if found:
                 presses += found
-            else:
-                assert (False), ":/"
         return presses
 
     def solve_part_2(self) -> int:
