@@ -1,7 +1,7 @@
 from typing import Any
 from Day import Day
 import re
-from itertools import combinations
+from itertools import combinations, combinations_with_replacement
 
 
 class y25d10(Day):
@@ -41,37 +41,63 @@ class y25d10(Day):
             self.puzzle.append({
                 'lights': lights,
                 'switches_lights': switches_lights,
-                'switches_joltages': sorted(switches_joltages, key=lambda s: len(s)),
+                'switches_joltages': switches_joltages,
                 'joltages': joltages
             })
 
     def solve_part_1(self) -> int:
-        presses = 0
+        nof_presses_total = 0
         for machine in self.puzzle:
             found = 0
+            nof_presses = 0
             # Try the shortest combinations first
-            # Note: XOR is self-inverse, so we don't actually need to press any button more than once
-            for n in range(1, len(machine['switches_lights'])+1):
+            # Note: XOR is commutative, so we can go from the desired state to zero
+            # Note: XOR is self-inverse and associative, so we don't actually need to press any button more than once
+            while (True):
+                nof_presses += 1
                 # Try each combination of N presses
-                for combo in list(combinations(machine['switches_lights'], n)):
+                for combo in list(combinations(machine['switches_lights'], nof_presses)):
                     lights = machine['lights']  # New combination of presses, reset the lights
                     # Press one by one
                     for v in combo:
                         lights ^= v
                         if not lights:
-                            found = n
+                            found = 1
                             break
                     if found:
                         break
                 if found:
                     break
             if found:
-                presses += found
-        return presses
+                nof_presses_total += nof_presses
+        return nof_presses_total
+
+    def is_combo_valid(self, joltage: list[int], pressed: tuple[list[int]]) -> bool:
+        for i, cnt in enumerate(joltage):
+            i_in_pressed = [1 for sw in pressed if i in sw]
+            if len(i_in_pressed) != cnt:
+                return False
+        return True
+
+    def solve_part_2_example(self) -> int:
+        nof_presses_total = 0
+        for machine in self.puzzle:
+            found = 0
+            nof_presses = 0
+            while (True):
+                nof_presses += 1
+                for combo in combinations_with_replacement(machine['switches_joltages'], nof_presses):
+                    if self.is_combo_valid(machine['joltages'], combo):
+                        found = 1
+                        break
+                if found:
+                    break
+            if found:
+                nof_presses_total += nof_presses
+        return nof_presses_total
 
     def solve_part_2(self) -> int:
-        return 0
-
+        return self.solve_part_2_example()
 
 def main() -> dict[str, str]:  # pragma: no cover
     today = y25d10()
