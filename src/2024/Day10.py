@@ -50,7 +50,7 @@ class Day10(Day):
     solve_part_2 = solve_part_1
 
 
-def main() -> dict[str, str]:  # pragma: no cover
+def main() -> dict[str, int]:  # pragma: no cover
     today = Day10()
     today.solve()
     return today.answer

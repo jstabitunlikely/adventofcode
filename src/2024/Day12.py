@@ -57,7 +57,7 @@ class Day12(Day):
         return self.solve_part_1(bulk_discount=bulk_discount)
 
 
-def main() -> dict[str, str]:  # pragma: no cover
+def main() -> dict[str, int]:  # pragma: no cover
     today = Day12()
     today.solve()
     return today.answer

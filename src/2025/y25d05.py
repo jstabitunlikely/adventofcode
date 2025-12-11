@@ -52,7 +52,7 @@ class y25d05(Day):
         return fresh_total
 
 
-def main() -> dict[str, str]:  # pragma: no cover
+def main() -> dict[str, int]:  # pragma: no cover
     today = y25d05()
     today.solve()
     return today.answer

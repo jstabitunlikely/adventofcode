@@ -55,7 +55,7 @@ class Day04(Day):
         return count
 
 
-def main() -> dict[str, str]:  # pragma: no cover
+def main() -> dict[str, int]:  # pragma: no cover
     today = Day04()
     today.solve()
     return today.answer

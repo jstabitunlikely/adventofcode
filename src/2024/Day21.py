@@ -120,7 +120,7 @@ class Day21(Day):
         return self.solve_part_1(layers=layers)
 
 
-def main() -> dict[str, str]:  # pragma: no cover
+def main() -> dict[str, int]:  # pragma: no cover
     today = Day21()
     today.solve()
     return today.answer

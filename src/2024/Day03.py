@@ -29,7 +29,7 @@ class Day03(Day):
         return answer
 
 
-def main() -> dict[str, str]:  # pragma: no cover
+def main() -> dict[str, int]:  # pragma: no cover
     today = Day03()
     today.solve()
     return today.answer

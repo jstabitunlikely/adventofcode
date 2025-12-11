@@ -47,7 +47,7 @@ class Day20(Day):
         return self.solve_part_1(cheat_max=20, limit=limit)
 
 
-def main() -> dict[str, str]:  # pragma: no cover
+def main() -> dict[str, int]:  # pragma: no cover
     today = Day20()
     today.solve()
     return today.answer

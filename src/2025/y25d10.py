@@ -99,7 +99,8 @@ class y25d10(Day):
     def solve_part_2(self) -> int:
         return self.solve_part_2_example()
 
-def main() -> dict[str, str]:  # pragma: no cover
+
+def main() -> dict[str, int]:  # pragma: no cover
     today = y25d10()
     today.solve()
     return today.answer
