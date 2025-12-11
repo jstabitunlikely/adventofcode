@@ -2,7 +2,7 @@ import pytest
 from y25d11 import y25d11
 
 
-EXAMPLE = """\
+EXAMPLE1 = """\
 aaa: you hhh
 you: bbb ccc
 bbb: ddd eee
@@ -15,19 +15,43 @@ hhh: ccc fff iii
 iii: out\
 """
 
+EXAMPLE2 = """\
+svr: aaa bbb
+aaa: fft
+fft: ccc
+bbb: tty
+tty: ccc
+ccc: ddd eee
+ddd: hub
+hub: fff
+eee: dac
+dac: fff
+fff: ggg hhh
+ggg: out
+hhh: out\
+"""
+
 
 EXPECTED = {
     'part_1': 5,
-    'part_2': 0,
+    'part_2': 2,
 }
 
 
 @pytest.fixture
 def answer():
     today = y25d11(auto_fetch=False)
-    today.puzzle_raw = EXAMPLE
+    # Part 1
+    today.puzzle_raw = EXAMPLE1
     today.parse_puzzle()
-    today.solve()
+    part_1 = today.solve_part_1()
+    # Part 2
+    today.puzzle_raw = EXAMPLE2
+    today.parse_puzzle()
+    part_2 = today.solve_part_2()
+    # Complete answer
+    today.answer['part_1'] = part_1
+    today.answer['part_2'] = part_2
     return today.answer
 
 
