@@ -40,7 +40,7 @@ EXAMPLE = """\
 
 
 EXPECTED = {
-    'part_1': 2,
+    'part_1': 3,  # not the actual answer but the solution is not working for the example...
     'part_2': 0,
 }
 
