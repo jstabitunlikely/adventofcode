@@ -85,7 +85,7 @@ class Day14(Day):
         return tick
 
 
-def main() -> dict[str, str]:  # pragma: no cover
+def main() -> dict[str, int]:  # pragma: no cover
     today = Day14()
     today.solve()
     return today.answer

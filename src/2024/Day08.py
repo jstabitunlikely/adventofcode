@@ -45,7 +45,7 @@ class Day08(Day):
         return self.solve_part_1(resonant_harmonics=True)
 
 
-def main() -> dict[str, str]:  # pragma: no cover
+def main() -> dict[str, int]:  # pragma: no cover
     today = Day08()
     today.solve()
     return today.answer

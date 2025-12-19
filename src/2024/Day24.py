@@ -132,7 +132,7 @@ class Day24(Day):
         return faults_str
 
 
-def main() -> dict[str, str]:  # pragma: no cover
+def main() -> dict[str, int]:  # pragma: no cover
     today = Day24()
     today.solve()
     return today.answer

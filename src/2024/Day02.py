@@ -42,7 +42,7 @@ class Day02(Day):
         return safe
 
 
-def main() -> dict[str, str]:  # pragma: no cover
+def main() -> dict[str, int]:  # pragma: no cover
     today = Day02()
     today.solve()
     return today.answer

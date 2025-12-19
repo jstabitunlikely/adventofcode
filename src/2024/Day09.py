@@ -116,7 +116,7 @@ class Day09(Day):
         return self.solve_part_1(move_files=True)
 
 
-def main() -> dict[str, str]:  # pragma: no cover
+def main() -> dict[str, int]:  # pragma: no cover
     today = Day09()
     today.solve()
     return today.answer

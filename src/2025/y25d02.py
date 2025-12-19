@@ -35,7 +35,7 @@ class y25d02(Day):
         return self.get_num_of_invalid_ids(self.INVALID_ID_RE_2)
 
 
-def main() -> dict[str, str]:  # pragma: no cover
+def main() -> dict[str, int]:  # pragma: no cover
     today = y25d02()
     today.solve()
     return today.answer

@@ -17,9 +17,9 @@ class Day(ABC):
             self.puzzle_raw = self.pif.input_
             if auto_parse:
                 self.parse_puzzle()
-        self.answer = {
-            'part_1': '',
-            'part_2': '',
+        self.answer: dict[str, int] = {
+            'part_1': 0,
+            'part_2': 0,
         }
 
     @abstractmethod

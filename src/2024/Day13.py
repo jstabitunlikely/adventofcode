@@ -49,7 +49,7 @@ class Day13(Day):
         return self.solve_part_1(correction=True)
 
 
-def main() -> dict[str, str]:  # pragma: no cover
+def main() -> dict[str, int]:  # pragma: no cover
     today = Day13()
     today.solve()
     return today.answer

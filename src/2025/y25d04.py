@@ -35,7 +35,7 @@ class y25d04(Day):
         return free_rolls
 
 
-def main() -> dict[str, str]:  # pragma: no cover
+def main() -> dict[str, int]:  # pragma: no cover
     today = y25d04()
     today.solve()
     return today.answer

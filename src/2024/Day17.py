@@ -76,7 +76,7 @@ class Day17(Day):
         return regA[0]
 
 
-def main() -> dict[str, str]:  # pragma: no cover
+def main() -> dict[str, int]:  # pragma: no cover
     today = Day17()
     today.solve()
     return today.answer

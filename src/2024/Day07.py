@@ -46,7 +46,7 @@ class Day07(Day):
         return self.solve_part_1(cen=True)
 
 
-def main() -> dict[str, str]:  # pragma: no cover
+def main() -> dict[str, int]:  # pragma: no cover
     today = Day07()
     today.solve()
     return today.answer

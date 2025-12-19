@@ -46,7 +46,7 @@ class y25d08(Day):
     solve_part_2 = solve_part_1
 
 
-def main() -> dict[str, str]:  # pragma: no cover
+def main() -> dict[str, int]:  # pragma: no cover
     today = y25d08()
     today.solve()
     return today.answer
